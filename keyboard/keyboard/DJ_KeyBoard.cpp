@@ -13,23 +13,15 @@
 
 #define MAX_WORD_LENGTH 24
 #define MAX_SCREEN_WORD_COUNT 19
-#define WORD_COUNT 11       
+#define WORD_COUNT 11
 
-int SPEED = 0;
-int g_word_count = 11;
-char** g_words;
-int g_fail_count = 0;                           // 실패한 개수
-int g_score = 0;                                // 정수
+//int g_word_count = 11;
+char** g_word;
+//string* g_word;
+//int g_fail_count = 0;                           // 실패한 개수
+//int g_score = 0;                                // 정수
 char g_input_word[MAX_WORD_LENGTH + 1];         // 입력 단어 저장
-int g_input_word_length = 0;                    // 입력 단어 길이
-int stage = 1;
 
-//할까말까
-void new_block(void);							//새로운 블록을 하나 만듦 
-void check_key(void);							//키보드로 키를 입력받음 
-void drop_block(void);							//블록을 아래로 떨어트림 
-void DrawWord(int i);                           // 화면에 나타난 i번째 단어 출력
-void EraseWord(int i);                          // 화면에 나타난 i번째 단어 지우기
 
 Word g_screen_word[100];// 화면에 나타난 단어들(g_words의 원소 index 저장)
 int g_screen_word_count = 0;                    // 화면에 나타난 단어 개수
@@ -41,11 +33,6 @@ void create_word(void) {
 	//알파벳에 맞는 멜로디?
 }
 
-
-//할까말까
-void new_block(void); //새로운 블록을 하나 만듦 
-void check_key(void); //키보드로 키를 입력받음 
-void drop_block(void); //블록을 아래로 떨어트림 
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -125,23 +112,47 @@ bool game_over(void) {
 		return false;
 	}
 }
-
+void make_random(void) {
+	cout << "random 10 number make : ";
+	for (int i = 0; i < 10; i++) {
+		cout << rand() % 17 << " ";
+	}
+}
+#define WORD_NUM 4
 void InitData(void)
 {
-	int i;
-	FILE* fp;
-	fp = fopen("g_words.txt", "rt");
-
-	g_words = (char**)malloc(sizeof(char*) * (WORD_COUNT + 1));
-
-	for (i = 0; i < WORD_COUNT; i++)
-	{
-		g_words[i] = (char*)malloc(sizeof(char) * (MAX_WORD_LENGTH + 1));
-		fgets(g_words[i], sizeof(char) * MAX_WORD_LENGTH, fp);
-		g_words[i][strlen(g_words[i]) - 1] = '\0';
+	int cnt = 0;
+	Word wd[WORD_NUM];
+	string filePath = "g_words.txt";
+	
+	ifstream openFile(filePath.data());
+	if (openFile.is_open()) {
+		string line;
+		while (getline(openFile, line)){
+			wd[cnt]=Word(line);
+			cout << line << endl;
+			cnt++;
+		}
+		openFile.close();
 	}
+	cout << endl << endl;
+	cout << "word array" << endl << endl;
+	for (auto i : wd) {
+		cout << i.get_name() << " ";
+	}
+	cout << endl<<endl;
 
-	//g_words[WORD_COUNT] = " ";
+	////g_words = new string[cnt];
+	//g_words = (char**)malloc(sizeof(char*) * (WORD_COUNT + 1));
 
-	fclose(fp);
+	//for (int i = 0; i < WORD_COUNT; i++)
+	//{
+	//	g_words[i] = (char*)malloc(sizeof(char) * (MAX_WORD_LENGTH + 1));
+	//	fgets(g_words[i], sizeof(char) * MAX_WORD_LENGTH, fp);
+	//	g_words[i][strlen(g_words[i]) - 1] = '\0';
+	//}
+
+	////g_words[WORD_COUNT] = " ";
+
+	//fclose(fp);
 }
