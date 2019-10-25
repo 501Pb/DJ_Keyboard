@@ -6,6 +6,7 @@ int main(void) {
 	system("cls");
 
 	do {
+
 		play_game();
 	} while (game_over());//게임오버 당할때까지
 

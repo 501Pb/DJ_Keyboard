@@ -95,6 +95,10 @@ void display(void) {
 //게임displays 계속해서 갱신되며, 단어들이 생성되고 지워진다
 
 bool game_over(void) {
+	
+	word.clear();//생성된 단어 clear
+	fill(v.begin(), v.begin() + MAP_Y, "│                                                                          │");
+
 	cout << "\n\n\n\n";
 	cout << "\t┌─┐┌─┐┌┬┐┌─┐  ┌─┐┬  ┬┌─┐┬─┐" << endl;
 	cout << "\t│ ┬├─┤│││├┤   │ │└┐┌┘├┤ ├┬┘" << endl;
