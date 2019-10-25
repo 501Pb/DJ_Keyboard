@@ -3,13 +3,6 @@
 int main(void) {
 	game_init();//게임 초기설정
 	title();//타이틀
-
-	cout << "Word List" << endl<<endl;
-	InitData();
-
-	make_random();
-
-	Sleep(10000);
 	system("cls");
 
 	do {

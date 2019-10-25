@@ -1,11 +1,15 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_NUM 3
+#define MAP_X 74
+#define MAP_Y 19
+#define WORD_NUM 4
 #include "word.h"
 #include <iostream>
 #include <fstream>
 
 #include <string>
+#include <vector>
 #include <windows.h>//sleep()
 #include <conio.h>//getch() - Å°ÀÔ·Â
 #include <cstdlib> //random
@@ -25,3 +29,8 @@ bool game_over(void);
 void play_game(void);
 void InitData(void);
 void make_random(void);
+void display(void);
+
+string make_string(Word wd);
+void make_word(void);
+string print_space(int a);

@@ -13,3 +13,4 @@ keyboard/keyboard/keyboard.vcxproj.user
 keyboard/Debug/keyboard.exe
 keyboard/.vs/keyboard/v16/ipch/AutoPCH/200be23d25c31604/MAIN.ipch
 keyboard/.vs/keyboard/v16/Browse.VC.db
+*.ipch
