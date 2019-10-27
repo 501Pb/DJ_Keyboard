@@ -1,4 +1,3 @@
-
 keyboard/.vs/keyboard/v16/.suo
 keyboard/.vs/keyboard/v16/Browse.VC.db
 keyboard/.vs/keyboard/v16/ipch/AutoPCH/200be23d25c31604/MAIN.ipch
@@ -18,3 +17,13 @@ keyboard/keyboard/Debug/main.obj
 keyboard/keyboard/Debug/vc142.idb
 keyboard/keyboard/Debug/vc142.pdb
 keyboard/keyboard/keyboard.vcxproj.user
+
+/.vs/
+*/.vs/
+/.vs/*
+*/.vs/*
+
+*.sln
+*.vcxproj
+*.filters
+
