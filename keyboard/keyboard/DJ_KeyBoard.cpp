@@ -56,6 +56,15 @@ void game_init(void) {
 
 
 /********************************화면*******************************************/
+bool is_ch(void)
+{
+	if (_kbhit()) {
+		_getch();
+		return true;
+	}
+	return false;
+}
+
 void title(void) {
 	//PlaySound(TEXT(SOUND_FILE_NAME), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 	cout << "\n\n\n\n";
@@ -72,12 +81,10 @@ void title(void) {
 	while (1) {//키입력이 감지될 때 까지 깜빡인다
 		cout << "\r\t \t \t \t \t \t Press Any Key...";
 		Sleep(1000);
+		if (is_ch) break;
 		cout << "\r\t \t \t \t \t \t                 ";
 		Sleep(1000);
-		if (_kbhit()) {
-			_getch();
-			break;
-		}
+		if (is_ch) break;
 	}
 	system("cls");
 }
