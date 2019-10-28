@@ -27,3 +27,6 @@ keyboard/keyboard/keyboard.vcxproj.user
 *.vcxproj
 *.filters
 
+x64/
+/x64/
+x64/*
