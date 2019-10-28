@@ -5,6 +5,8 @@ int main(void) {
 	title();//≈∏¿Ã∆≤
 	system("cls");
 
+
+
 	do {
 
 		play_game();
