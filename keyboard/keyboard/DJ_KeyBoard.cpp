@@ -60,7 +60,7 @@ void game_init(void) {
 
 
 /********************************화면*******************************************/
-/*bool is_ch(void)
+bool is_ch(void)
 {
 	if (_kbhit()) { //키보드가 입력된 상태인지 확인하는 함수
 	
@@ -69,7 +69,7 @@ void game_init(void) {
 	}
 	return false;
 	
-}*/
+}
 
 void title(void) {
 	//PlaySound(TEXT(SOUND_FILE_NAME), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
@@ -180,8 +180,6 @@ string print_space(int a) {
 	return s;
 }
 //지정된수만큼 스페이스바를 출력해준다. 지저분한코드방지
-
-
 
 void play_game(void) {
 	vector<Word>::iterator witer;
