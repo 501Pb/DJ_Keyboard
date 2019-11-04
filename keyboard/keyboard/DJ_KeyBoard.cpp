@@ -1,6 +1,6 @@
 #include "DJ.h"
 #include "word.h"
- #define  ONE_SECOND 1000 //1초에 해당하는 1000ms = 1s  
+#define  ONE_SECOND 1000 //1초에 해당하는 1000ms = 1s  
 
 /********************************전역변수*****************************************/
 clock_t g_start_time;                           // 기준 시각
