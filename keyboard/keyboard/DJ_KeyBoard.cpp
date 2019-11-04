@@ -1,6 +1,6 @@
 #include "DJ.h"
 #include "word.h"
-
+#define ONE_SECOND 1000 //1000ms=1s
 /********************************전역변수*****************************************/
 clock_t g_start_time;                           // 기준 시각
 double g_falling_speed = 2.0;                   // 단어 낙하 시각(초 단위)
@@ -78,14 +78,22 @@ void title(void) {
 	cout << "\t |______| |_______||_____| |___| |_||_______|  |___|  |_______||_______||__| |__||___|  |_||______| \t" << endl;
 	cout << "\n\n\n\n";
 
-	while (1) {//키입력이 감지될 때 까지 깜빡인다
+	do { //아무 키나 입력하면 다음화면으로 전환함 
+		cout << "\r\t \t \t \t \t \t Press Any Key...";
+		Sleep(ONE_SECOND);
+		_getch();
+		puts("");
+		Sleep(ONE_SECOND);
+	} while (_kbhit());
+
+	/*while (1) {//키입력이 감지될 때 까지 깜빡인다
 		cout << "\r\t \t \t \t \t \t Press Any Key...";
 		Sleep(1000);
 		if (is_ch) break;
 		cout << "\r\t \t \t \t \t \t                 ";
 		Sleep(1000);
 		if (is_ch) break;
-	}
+	}*/
 	system("cls");
 }
 //타이틀화면
