@@ -1,11 +1,11 @@
 #include "DJ.h"
 #include "word.h"
 
+#define  ONE_SECOND 1000 //1초에 해당하는 1000ms = 1s  
 /********************************전역변수*****************************************/
 clock_t g_start_time;                           // 기준 시각
 double g_falling_speed = 2.0;                   // 단어 낙하 시각(초 단위)
 //아직 사용못한 두개//
-
 
 Word wd[WORD_NUM];
 // : txt 파일에서 모든 Word를 추출해내 저장한 배열
@@ -22,26 +22,28 @@ void InitData(void)
 	int cnt = 0;
 	string filePath = "g_words.txt";
 
-	ifstream openFile(filePath.data());
-	if (openFile.is_open()) {
+	ifstream openFile(filePath.data()); //filePath.data()를 읽기 위해 파일을 열었음
+	if (openFile.is_open()) { //is_open()함수로 파일이 정확히 열렸는지를 확인 
 		string line;
-		while (getline(openFile, line)) {
+		while (getline(openFile, line)) { //파일을 읽어들임
 			wd[cnt] = Word(line);
 			cnt++;
 		}
-		openFile.close();
+		openFile.close(); //파일 닫음
 	}
 	cout << endl << endl;
-	//cout << "word array" << endl;
-	//for (auto i : wd) {
-	//	cout << i.get_name() << " ";
-	//}
-	//cout << endl<<endl;
+	/*
+	cout << "word array" << endl;
+	for (auto i : wd) {
+		cout << i.get_name() << " ";
+	}
+	cout << endl<<endl;
+	*/
 }
 //텍스트파일에서 wd배열로 데이터를 추출한다.
 
 void game_init(void) {
-	g_start_time = clock();
+	g_start_time = clock(); 
 	//시드
 	srand((unsigned int)time(NULL));
 	//커서 숨기기
@@ -49,6 +51,8 @@ void game_init(void) {
 	cursorInfo.dwSize = 1;
 	cursorInfo.bVisible = FALSE;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+	//지정된 콘솔 스크린 버퍼에 대하여 커서의 형태 (두께 or 노출여부) 를 설정하는 역할을 함 
+	//매개변수로 콘솔 스크린 버퍼에 대한 핸들과 CONSOLE_CURSUR_INFO 구조체를 넘겨줌
 	InitData();
 }
 //게임들의 초기설정들을 지정해준다.
@@ -56,14 +60,16 @@ void game_init(void) {
 
 
 /********************************화면*******************************************/
-bool is_ch(void)
+/*bool is_ch(void)
 {
-	if (_kbhit()) {
-		_getch();
+	if (_kbhit()) { //키보드가 입력된 상태인지 확인하는 함수
+	
+		_getch(); //입력은 받지만 무엇을 입력했는지 보여주지 않는 함수
 		return true;
 	}
 	return false;
-}
+	
+}*/
 
 void title(void) {
 	//PlaySound(TEXT(SOUND_FILE_NAME), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
@@ -78,26 +84,35 @@ void title(void) {
 	cout << "\t |______| |_______||_____| |___| |_||_______|  |___|  |_______||_______||__| |__||___|  |_||______| \t" << endl;
 	cout << "\n\n\n\n";
 
-	while (1) {//키입력이 감지될 때 까지 깜빡인다
+	do { //키 입력받으면 다음 화면으로 넘어감.
 		cout << "\r\t \t \t \t \t \t Press Any Key...";
-		Sleep(1000);
+		Sleep(ONE_SECOND);
+		_getch();
+		puts("");
+		Sleep(ONE_SECOND);
+	} while (_kbhit());
+
+	/*while (1) {//키입력이 감지될 때 까지 깜빡인다
+		cout << "\r\t \t \t \t \t \t Press Any Key...";
+		Sleep(ONE_SECOND);
 		if (is_ch) break;
 		cout << "\r\t \t \t \t \t \t                 ";
-		Sleep(1000);
+		Sleep(ONE_SECOND);
 		if (is_ch) break;
-	}
+	}*/
 	system("cls");
 }
 //타이틀화면
 
 void display(void) {
-	cout<<"exit입력시 게임오버"<<endl;
-	printf("┌──────────────────────────────────────────────────────────────────────────┐\n");//상단
-	for (auto str : v)
-		cout << str << endl;																																			//단어로딩
-	printf("└──────────────────────────────────────────────────────────────────────────┘\n");//하단
-	cout << "____________________________________________________________________________" << endl;
-
+	
+		cout << "exit입력시 게임오버" << endl;
+		printf("┌──────────────────────────────────────────────────────────────────────────┐\n");//상단
+		for (auto str : v)
+			cout << str << endl; 			 																																//단어로딩
+		printf("└──────────────────────────────────────────────────────────────────────────┘\n");//하단
+		cout << "____________________________________________________________________________" << endl;
+	
 }
 //게임displays 계속해서 갱신되며, 단어들이 생성되고 지워진다
 
@@ -126,8 +141,6 @@ bool game_over(void) {
 	}
 }
 //게임오버화면
-
-
 
 /********************************단어생성*******************************************/
 void make_word(void) {
