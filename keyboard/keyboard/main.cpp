@@ -2,20 +2,24 @@
 #include "Recording.h"
 
 int main(void) {
+	game_status status = Init; // 게임 상태 표시
+	std::thread thread_recording(Record, &status); // 녹음용 쓰레드
+	
 	game_init();//게임 초기설정
 	title();//타이틀
 	system("cls");
 
-	game_status status = game_status::Start;
-
+	
 	do {
-		std::thread thread_recording(Record, &status);
+		status = Start;
 		
 		play_game();
 
-		status = game_status::End;
+		status = GameOver;
 	} while (game_over());//게임오버 당할때까지
-	thread_recording.join();
+	
+	status = End;
+	thread_recording.join(); // 쓰레드 종료까지 대기
 
 	return 0;
 }

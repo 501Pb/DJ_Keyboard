@@ -1,7 +1,7 @@
 #include <irrKlang.h>
 #include <thread>
 #include <Windows.h>
-
+#include <string>
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
 using namespace std;
@@ -13,6 +13,7 @@ enum game_status
 	Start,
 	PAUSE,
 	STOP,
+	GameOver,
 	End
 };
 

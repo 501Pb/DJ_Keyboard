@@ -54,6 +54,9 @@ void writeWaveFile(const char* filename, SAudioStreamFormat format, void* data)
 
 void Record(int *status)
 {
+	int count = 0;
+	string filename;
+
 	ISoundEngine* engine = createIrrKlangDevice();
 	IAudioRecorder* recorder = createIrrKlangAudioRecorder(engine);
 
@@ -63,17 +66,22 @@ void Record(int *status)
 		return 1;
 	}
 
-	// start recording
-	recorder->startRecordingBufferedAudio();
-
-	while(status != game_status::End)
+	while (status != End)
 	{
-		Sleep(200);
-	}
+		// start recording
+		recorder->startRecordingBufferedAudio();
 
-	// stop recording and save
-	recorder->stopRecordingAudio();
-	writeWaveFile("music.wav", recorder->getAudioFormat(), recorder->getRecordedAudioData());
+		while (status != game_status::GameOver)
+		{
+			Sleep(200);
+		}
+		
+		filename = "music" + to_string(count++) + ".wav";
+
+		// stop recording and save
+		recorder->stopRecordingAudio();
+		writeWaveFile(filename.c_str(), recorder->getAudioFormat(), recorder->getRecordedAudioData());
+	}
 
 	return;
 }
