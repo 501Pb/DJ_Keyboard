@@ -51,12 +51,8 @@ void writeWaveFile(const char* filename, SAudioStreamFormat format, void* data)
 		printf("Could not open %s to write audio data\n", filename);
 }
 
-
-void Record(game_status* status)
+void Record(game_status* status, string * filename)
 {
-	int count = 0;
-	string filename;
-
 	ISoundEngine* engine = createIrrKlangDevice();
 	IAudioRecorder* recorder = createIrrKlangAudioRecorder(engine);
 
@@ -67,9 +63,7 @@ void Record(game_status* status)
 	}
 
 	while (*status == game_status::Init)
-	{
 		Sleep(SLEEPTIME);
-	}
 
 	while (*status != game_status::End)
 	{
@@ -77,20 +71,16 @@ void Record(game_status* status)
 		recorder->startRecordingBufferedAudio();
 
 		while (*status == game_status::Start)
-		{
 			Sleep(SLEEPTIME);
-		}
 
-		// stop recording and save
-		filename = "music" + to_string(count++) + ".wav";
-
+		// stop recording
 		recorder->stopRecordingAudio();
-		writeWaveFile(filename.c_str(), recorder->getAudioFormat(), recorder->getRecordedAudioData());
+
+		// save recording
+		writeWaveFile(("../music/" + *filename + ".wav").c_str(), recorder->getAudioFormat(), recorder->getRecordedAudioData());
 
 		while (*status == game_status::GameOver)
-		{
 			Sleep(SLEEPTIME);
-		}
 	}
 
 	return;
