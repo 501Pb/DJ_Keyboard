@@ -52,7 +52,7 @@ void writeWaveFile(const char* filename, SAudioStreamFormat format, void* data)
 }
 
 
-void Record(int *status)
+void Record(game_status* status)
 {
 	int count = 0;
 	string filename;
@@ -63,24 +63,34 @@ void Record(int *status)
 	if (!engine || !recorder)
 	{
 		printf("Could not create audio engine or audio recoder\n");
-		return 1;
+		return ;
 	}
 
-	while (status != End)
+	while (*status == game_status::Init)
+	{
+		Sleep(SLEEPTIME);
+	}
+
+	while (*status != game_status::End)
 	{
 		// start recording
 		recorder->startRecordingBufferedAudio();
 
-		while (status != game_status::GameOver)
+		while (*status == game_status::Start)
 		{
-			Sleep(200);
+			Sleep(SLEEPTIME);
 		}
-		
-		filename = "music" + to_string(count++) + ".wav";
 
 		// stop recording and save
+		filename = "music" + to_string(count++) + ".wav";
+
 		recorder->stopRecordingAudio();
 		writeWaveFile(filename.c_str(), recorder->getAudioFormat(), recorder->getRecordedAudioData());
+
+		while (*status == game_status::GameOver)
+		{
+			Sleep(SLEEPTIME);
+		}
 	}
 
 	return;

@@ -3,18 +3,19 @@
 #include <Windows.h>
 #include <string>
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+#pragma warning(disable:4996)
+#define SLEEPTIME 200
 
 using namespace std;
 using namespace irrklang;
 
-enum game_status
+enum class game_status
 {
 	Init,
 	Start,
 	PAUSE,
-	STOP,
 	GameOver,
 	End
 };
 
-void Record(int *status);
+void Record(game_status* status);
