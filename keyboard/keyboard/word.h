@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 using namespace std;
+
 class Word {
 	string name;
 	//단어내용
