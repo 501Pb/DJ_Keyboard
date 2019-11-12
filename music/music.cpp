@@ -11,7 +11,7 @@ using namespace irrklang;
 using namespace std;
 #pragma comment(lib, "irrKlang.lib")
 
-void musicStart(vector<vector<int> > & note, ISoundEngine * music, int bpm, bool & playing) {
+void music_start(vector<vector<int> > & note, ISoundEngine * music, int & bpm, bool & playing) {
 	while (playing) {
 		for (vector<int> beat : note) {
 			for (int sound : beat) {
@@ -74,24 +74,25 @@ void musicStart(vector<vector<int> > & note, ISoundEngine * music, int bpm, bool
 	}
 }
 
-void musicChanger(vector<vector<int> > & note, int length) {
-	srand((unsigned int)time(0) + (unsigned int)GetCurrentThreadId());
+void music_changer(vector<vector<int> > & note, int length) {
+	cout << "[+] length : " << length << endl;
 	int start = rand() % 32;
-	cout << start;
 	for (int i = 0; i < length; i++) {
-		notePush(note[start % 32], rand() % 14 + 1);
+		int sound = rand() % 14 + 1;
+		note_push(note[start % 32], sound);
+		cout << "Add " << sound << " at " << start << endl;
 		++start;
 	}
 }
 
-void notePush(vector<int> & note, int sound) {
+void note_push(vector<int> & note, int sound) {
 	for (int i = 2; i < note.size() - 1; i++) {
 		note[i + 1] = note[i];
 	}
 	note[2] = sound;
 }
 
-void clearNote(vector<vector<int> > & note, int nesting) {
+void clear_note(vector<vector<int> > & note, int nesting) {
 	note.assign(32, vector<int>(nesting + 2, 0));
 	// Kick
 	note[0][0] = note[2][0] = note[8][0] = note[10][0] = note[16][0] = note[21][0] = note[23][0] = note[24][0] = note[26][0] = 100;
