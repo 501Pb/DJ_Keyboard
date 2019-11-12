@@ -13,9 +13,9 @@
 using namespace irrklang;
 using namespace std;
 
-void musicStart(vector<vector<int> > & note, ISoundEngine * music, int bpm, bool & playing);
-void musicChanger(vector<vector<int> > & note, int length);
-void notePush(vector<int> & note, int sound);
-void clearNote(vector<vector<int> > & note, int nesting);
+void music_start(vector<vector<int> > & note, ISoundEngine * music, int & bpm, bool & playing);
+void music_changer(vector<vector<int> > & note, int length);
+void note_push(vector<int> & note, int sound);
+void clear_note(vector<vector<int> > & note, int nesting);
 
 #endif
