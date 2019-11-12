@@ -27,20 +27,21 @@ int main(int argc, const char** argv) {
 	bool playing = true;
 
 	vector<vector<int> > note;
-	clearNote(note, nesting);
+	clear_note(note, nesting);
 
-	cout << "Now Playing~";
+	cout << "Now Playing~" << endl;
 	cout.flush();
+	srand((unsigned int)time(0) * (unsigned int)GetCurrentThreadId());
 
-	thread music_thread(musicStart, ref(note), music, bpm, ref(playing));
-	thread change_thread(musicChanger, ref(note), 5);
-	thread change_thread2(musicChanger, ref(note), 5);
-	thread change_thread3(musicChanger, ref(note), 5);
+	thread music_thread(music_start, ref(note), music, ref(bpm), ref(playing));
+	while (1) {
+		music_changer(note, rand()%5 + 1);
+		Sleep(5000);
+		// change speed
+		bpm += 5;
+	}
 
 	music_thread.join();
-	change_thread.join();
-	change_thread2.join();
-	change_thread3.join();
 
 	music->drop();
 	return 0;
