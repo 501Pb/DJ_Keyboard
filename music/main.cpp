@@ -15,34 +15,25 @@ using namespace std;
 
 int main(int argc, const char** argv) {
 	// start the sound engine with default parameters
-	ISoundEngine * music = createIrrKlangDevice();
-
+	Music music = Music();
 	system("cls");
-
-	// Maximum sound count at once
-	int nesting = 2;
-	
-	int bpm = 130;
-
-	bool playing = true;
-
-	vector<vector<int> > note;
-	clear_note(note, nesting);
 
 	cout << "Now Playing~" << endl;
 	cout.flush();
+
 	srand((unsigned int)time(0) * (unsigned int)GetCurrentThreadId());
 
-	thread music_thread(music_start, ref(note), music, ref(bpm), ref(playing));
+	// music thread
+	thread music_thread(&Music::music_start, &music);
+
+	// input
 	while (1) {
-		music_changer(note, rand()%5 + 1);
-		Sleep(5000);
-		// change speed
-		bpm += 5;
+		cout << "Insert length :";
+		int len;
+		cin >> len;
+		music.note_adder(len);
 	}
 
 	music_thread.join();
-
-	music->drop();
 	return 0;
 }
