@@ -49,6 +49,7 @@ public:
 	void music_stop() { playing = false; }
 	void bpm_changer(int bpm) { this->bpm = bpm; }
 	void note_adder(int length);
+	void note_clear(){ note.assign(32, vector<int>(nesting + 2, 0)); }
 	void note_push(vector<int> & note, int sound);
 	~Music() { music->drop(); }
 
