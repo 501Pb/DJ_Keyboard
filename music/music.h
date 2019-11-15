@@ -13,9 +13,45 @@
 using namespace irrklang;
 using namespace std;
 
-void music_start(vector<vector<int> > & note, ISoundEngine * music, int & bpm, bool & playing);
-void music_changer(vector<vector<int> > & note, int length);
-void note_push(vector<int> & note, int sound);
-void clear_note(vector<vector<int> > & note, int nesting);
+static const char* SOUND[17] = {
+	"",
+	"./music/LowDo.wav",
+	"./music/LowLe.wav",
+	"./music/LowMi.wav",
+	"./music/LowFa.wav",
+	"./music/LowSol.wav",
+	"./music/LowLa.wav",
+	"./music/LowSi.wav",
+	"./music/Do.wav",
+	"./music/Le.wav",
+	"./music/Mi.wav",
+	"./music/Fa.wav",
+	"./music/Sol.wav",
+	"./music/La.wav",
+	"./music/Si.wav",
+	"./music/Kick.wav",
+	"./music/Snare.wav"
+};
+
+class Music{
+private:
+	ISoundEngine * music;
+	vector<vector<int> > note;
+	int nesting;
+	int bpm;
+	bool playing;
+	int beat;
+	bool optionSoundErase;
+
+public:
+	Music(int nesting = 2, int bpm = 130, bool option1 = false);
+	void music_start();
+	void music_stop() { playing = false; }
+	void bpm_changer(int bpm) { this->bpm = bpm; }
+	void note_adder(int length);
+	void note_push(vector<int> & note, int sound);
+	~Music() { music->drop(); }
+
+};
 
 #endif
