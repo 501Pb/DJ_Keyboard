@@ -17,16 +17,18 @@ vector<string> v(MAP_Y, "│                                                     
 
 int ph; //체력
 char input_word[50]; // 사용자 입력 버퍼
-
-const char* AllWord[10] = {
-	"서울",
-	"런던",
-	"파리",
-	"베를린",
-	"빈",
-	"스톡홀름",
-	"멕시코시티",
+int AllWord_size = 1024;
+const char* AllWord[10]
+= {
+	"girugi",
+	"tiger",
+	"DJ_keyboard",
+	"rabbit",
+	"flower",
+	"box",
+	"attention",
 	"","",""};
+
 //파일에 있는 단어들이 저장될 배열
 
 typedef struct { //단어 구조체
@@ -46,6 +48,25 @@ void end_thread(); // 스레드 중지 함수
 /********************************초기화*****************************************/
 void InitData(void)
 {
+	int position = 0;
+	char* allWord = new char[1024];
+
+	ifstream fin("g_words.txt"); //opening an input stream for file test.txt
+
+	if (fin.is_open())
+	{
+		while (!fin.eof() && position < AllWord_size)
+		{
+			fin.get(allWord[position]);
+			position++;
+		}
+		AllWord[position - 1] = '\0';
+	}
+	else
+	{
+		cout << "File could not be opened." << endl;
+	}
+
 	int i;
 	for (i = 0; i < 21; i++)
 	{
@@ -74,7 +95,7 @@ void game_init(void) {
 
 void title(void) {
 	//PlaySound(TEXT(SOUND_FILE_NAME), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-	
+
 	cout << "\n\n\n\n";
 	cout << "\t ______       ___          ___   _  _______  __   __  _______  _______  _______  ______    ______  \t" << endl;
 	cout << "\t |      |     |   |        |   | | ||       ||  | |  ||  _    ||       ||   _   ||    _ |  |      | \t" << endl;
@@ -100,26 +121,27 @@ void title(void) {
 
 void display(void) {
 
-		system("cls"); //콘솔창 초기화
+	system("cls"); //콘솔창 초기화
 
-		printf("exit입력시 게임오버 \t\t [체력] %.1d \n", ph); //현재 체력과 총 시간 출력
-		
-		printf("┌──────────────────────────────────────────────────────────────────────────┐\n");//상단
-		
-		for (int i = 0; i < 20; i++)
-		{	 
-			printf("%*s%s\n", rains[i].x, "", rains[i].words); // x좌표에 맞추어 가변적으로 단어 출력
-		}
-		printf("└──────────────────────────────────────────────────────────────────────────┘\n");//하단
-		cout << "____________________________________________________________________________" << endl;
-		if (strcmp(rains[20].words, " ")) // 20번째 줄에 단어가 있는 경우
-			ph -= 1; // 단어 입력 못할때마다 체력이 1씩 감소됨
-		
-		cout << ">>"; // 사용자의 입력부
+	printf("exit입력시 게임오버 \t\t [체력] %.1d \n", ph); //현재 체력과 총 시간 출력
+
+	printf("────────────────────────────────────────────────────────────────────────────\n");//상단
+
+	for (int i = 0; i < 20; i++)
+	{
+		printf("%*s%s\n", rains[i].x, "", rains[i].words); // x좌표에 맞추어 가변적으로 단어 출력
+
+	}
+	printf("────────────────────────────────────────────────────────────────────────────\n");//하단
+	//cout << "____________________________________________________________________________" << endl;
+	if (strcmp(rains[20].words, " ")) // 20번째 줄에 단어가 있는 경우
+		ph -= 1; // 단어 입력 못할때마다 체력이 1씩 감소됨
+
+	cout << ">>"; // 사용자의 입력부
 }
 //게임displays 계속해서 갱신되며, 단어들이 생성되고 지워진다
 
-bool game_over(void) {
+int game_over(void) {
 	system("cls");
 	//word.clear();//생성된 단어 clear
 	fill(v.begin(), v.begin() + MAP_Y, "│                                                                          │");
@@ -136,18 +158,19 @@ bool game_over(void) {
 	string s;	cout << "\t>> ";	cin >> s;
 	if (s == "y" || s == "Y") {
 		system("cls");
-		return true;
+		return 2;
 	}
 	else {
 		system("cls");
-		return false;
+		return 3;
 	}
 }
+
 //게임오버화면
 
 /********************************단어생성*******************************************/
 void make_word(void) {
-	
+
 	for (int i = 20; i >= 0; i--) {
 		strcpy(rains[i].words, rains[i - 1].words); // 기존 단어는 한 줄씩 밀고
 		rains[i].x = rains[i - 1].x;
@@ -156,54 +179,23 @@ void make_word(void) {
 	}
 	rains[0].x = rand() % 53;
 	srand(time(NULL));
-	strcpy(rains[0].words, AllWord[rand()%10]); // 새로운 단어를 무작위로 배치
+	strcpy(rains[0].words, AllWord[rand() % 10]); // 새로운 단어를 무작위로 배치
 }
-
-
-//랜덤으로 wd배열에서 단어하나를 추출해 게임display에 표시할 수 있도록 만들어준다.
-
-/*string make_string(Word wd) {
-	int len = wd.get_name().length();
-	string s;
-	if (len > 0) {//랜덤으로 빈칸을 만들어서 출력해준다.
-		int r = MAP_X - len;
-		int a = rand() % r;
-		int b = r - a;
-		s = "│";	s += print_space(a);	s += wd.get_name();		s += print_space(b);		s += "│";
-	}
-	else {
-		s = "│";	s += print_space(MAP_X);	s += "│";
-	}
-	return s;
-}
-//display에 표시할 수 있도록 문자열로 만들어준다.
-
-string print_space(int a) {
-	string s = "";
-	for (int i = 0; i < a; i++) {
-		s += " ";
-	}
-	return s;
-}*/
-//지정된수만큼 스페이스바를 출력해준다. 지저분한코드방지
 
 void play_game(void) {
 
 	ph = 3; //체력 3으로 초기화
 	system("cls"); //콘솔창 초기화
 	InitData(); //단어 배열 초기화
-	start_threaㅑd();
 	g_start_time = clock();
 
 	while (1) {
-
+		start_thread();
 		Sleep(SPEED); //지정한 시간만큼 단어 생성 지연
-		
-		make_word();//단어 생성해주고
-		
-		g_end_time = clock(); //해당 단어가 생성된 시간 기록
 
-		display();// TODO : 이걸 초단위로 갱신시켜줘야함
+		make_word();//단어 생성해주고
+
+		g_end_time = clock(); //해당 단어가 생성된 시간 기록
 
 		if (ph <= 0) // 체력이 0 이면
 			break; // 게임 종료됨
@@ -213,14 +205,20 @@ void play_game(void) {
 
 void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 {
+	int word_len; //올바르게 입력된 단어 길이
+	display(); //화면 출력
+
 	while (!thr_exit) // 스레드가 중지될 때까지 입력을 계속 받음
 	{
 		gets_s(input_word);
-
-		for (int i = 0; i < 20; i++)
+		;
+		for (int i = 20; i >= 0; i--)
 		{
-			if (strstr(rains[i].words, input_word)) // 입력한 단어와 입력값이 같으면
+			if (strstr(rains[i].words, input_word)) {// 입력한 단어와 입력값이 같으면 
+				word_len = strlen(input_word); //음악 프로세스 부분 함수에 넘길 단어 길이
 				strcpy(rains[i].words, " "); // 해당 단어 제거
+				break;
+			}
 		}
 	}
 	return 0;
@@ -240,7 +238,7 @@ void end_thread() // 스레드 중지 함수
 
 void help_function() // 도움말 함수
 {
-	system("cls"); 
+	system("cls");
 	cout << "단어를 입력하면 음이 재생되어 노래가 완성됩니다!" << endl;
 	cout << "체력이 0이 되면 게임이 종료됩니다! " << endl;
 	cout << "메뉴로 돌아가고 싶다면 아무 키나 눌러주세요!" << endl;
@@ -273,7 +271,7 @@ int menu_function() { //메인메뉴 함수
 	{
 	case 1:
 		play_game(); // 게임 시작 함수 호출
-		if (!game_over()) return 1; //만약 사용자가 continue?(Y/N) 질문에서 n을 입력한 경우 1을 반환하여 게임 종료시킴
+		if (game_over() == 3) return 1; //만약 사용자가 continue?(Y/N) 질문에서 n을 입력한 경우 1을 반환하여 게임 종료시킴
 		break;
 	case 2:
 		help_function(); // 도움말 출력 함수 호출
@@ -287,3 +285,5 @@ int menu_function() { //메인메뉴 함수
 	}
 	return 0;
 }
+
+
