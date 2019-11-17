@@ -8,7 +8,7 @@ int main(void) {
 			
 	while (1) {
 
-		if (menu_function() == 1) break; //menu_function()함수가 1을 반환하면 게임 종료함.
+		if (!menu_function()) break; //menu_function()함수가 1을 반환하면 게임 종료함.
 	
 	}
 	return 0;

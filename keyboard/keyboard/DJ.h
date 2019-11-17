@@ -31,13 +31,15 @@ using namespace std;
 
 void title(void);
 void game_init(void);
-int game_over(void);
+bool game_over(void);
 void play_game(void);
 void InitData(void);
 void display(void);
-void Random_word(int i);
 
+void random_word(void); //출력될 단어 랜덤으로 설정하는 함수
 void help_function(); // 도움말 출력 함수
-int menu_function(); //메뉴 출력 함수
+bool menu_function(); //메뉴 출력 함수
 void GotoXY(int x, int y); //커서 이동 함수
-void DrawWord(int i);
+void* t_function(void* data); // 스레드화 할 사용자 입력 함수
+void start_thread(); // 스레드 시작 함수
+void end_thread(); // 스레드 중지 함수
