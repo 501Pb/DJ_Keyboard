@@ -61,3 +61,11 @@ void Music::note_push(vector<int> & note, int sound) {
 	}
 	note[2] = sound;
 }
+
+void Music::note_clear() {
+	note.assign(32, vector<int>(nesting + 2, 0));
+	// Kick
+	note[0][0] = note[2][0] = note[8][0] = note[10][0] = note[16][0] = note[21][0] = note[23][0] = note[24][0] = note[26][0] = 15;
+	// Snare
+	note[4][1] = note[12][1] = note[20][1] = note[28][1] = 16;
+}
