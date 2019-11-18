@@ -1,33 +1,39 @@
+#include "music.h"
 #include <iostream>
 #include <windows.h>
 #include <irrKlang.h>
-#include <queue>
 #include <vector>
+#include <stdlib.h>
+#include <ctime>
+#include <thread>
 
 using namespace irrklang;
 using namespace std;
 
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
+
 int main(int argc, const char** argv) {
 	// start the sound engine with default parameters
+	Music music = Music();
+	system("cls");
 
-	ISoundEngine * music = createIrrKlangDevice();
-	music->play2D("./music/Do.wav", false);
-	music->play2D("./music/Mi.wav", false);
-	music->play2D("./music/Sol.wav", false);
-	Sleep(500);
-	music->play2D("./music/Le.wav", false);
-	music->play2D("./music/Sol.wav", false);
-	Sleep(500);
-	music->play2D("./music/Si.wav", false);
-	music->play2D("./music/Fa.wav", false);
-	Sleep(500);
-	music->play2D("./music/Do.wav", false);
-	Sleep(500);
+	cout << "Now Playing~" << endl;
+	cout.flush();
 
-	int i;
-	cin >> i;
-	music->drop();
+	srand((unsigned int)time(0) * (unsigned int)GetCurrentThreadId());
+
+	// music thread
+	thread music_thread(&Music::music_start, &music);
+
+	// input
+	while (1) {
+		cout << "Insert length :";
+		int len;
+		cin >> len;
+		music.note_adder(len);
+	}
+
+	music_thread.join();
 	return 0;
 }
