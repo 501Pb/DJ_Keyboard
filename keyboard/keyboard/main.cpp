@@ -1,13 +1,20 @@
 #include "DJ.h"
+#include "music.h"
 #include "Recording.h"
 
 int main(void) {
-	game_status status = game_status::Init; // °ÔÀÓ »óÅÂ Ç¥½Ã
-	string filename = "music";	// filename ÀúÀå
-	thread thread_recording(Record, &status, &filename); // ³ìÀ½¿ë ¾²·¹µå
+	game_status status = game_status::Init; // ê²Œì„ ìƒíƒœ í‘œì‹œ
+	string filename = "music";	// filename ì €ì¥
+	thread thread_recording(Record, &status, &filename); // ë…¹ìŒìš© ì“°ë ˆë“œ
 	
-	game_init();//°ÔÀÓ ÃÊ±â¼³Á¤
-	title();//Å¸ÀÌÆ²
+	srand((unsigned int)time(0) * (unsigned int)GetCurrentThreadId());
+
+	// music thread
+	thread music_thread(&Music::music_start, &music);
+	
+	game_init();//ê²Œì„ ì´ˆê¸°ì„¤ì •
+	title();//íƒ€ì´í‹€
+	Music music = new Music();
 	system("cls");
 		
 	
@@ -17,10 +24,10 @@ int main(void) {
 		play_game();
 
 		status = game_status::GameOver;
-	} while (game_over());//°ÔÀÓ¿À¹ö ´çÇÒ¶§±îÁö
+	} while (game_over());//ê²Œì„ì˜¤ë²„ ë‹¹í• ë•Œê¹Œì§€
 	
 	status = game_status::End;
-	thread_recording.join(); // ¾²·¹µå Á¾·á±îÁö ´ë±â
+	thread_recording.join(); // ì“°ë ˆë“œ ì¢…ë£Œê¹Œì§€ ëŒ€ê¸°
 
 	return 0;
 }
