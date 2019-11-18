@@ -1,7 +1,5 @@
 #include "DJ.h"
 #include "word.h"
-#define  ONE_SECOND 1000 //1초에 해당하는 1000ms = 1s  
-
 /********************************전역변수*****************************************/
 clock_t g_start_time;                           // 기준 시각(게임 시작)
 clock_t g_end_time;								// 게임 종료 시간
@@ -15,7 +13,7 @@ vector<string> v(MAP_Y, "│                                                     
 //출력할 단어들을 string으로 가지고 있는 vector 기본값으로 |    | 출력값을 가지고 있음.(맵 사이드)
 
 int ph; //체력 저장
-char input_word[50]; // 사용자 입력 값 저장
+char input_word[1024]; // 사용자 입력 값 저장
 const char* EXIT = "exit"; // exit 문자열을 저장 (사용자가 exit를 입력했을 때 게임이 끝남)
 
 const char* AllWord[10] //산성비 게임에서 출력될 단어
@@ -26,8 +24,8 @@ const char* AllWord[10] //산성비 게임에서 출력될 단어
 	"rabbit",
 	"flower",
 	"box",
-	"attention",
-	"","",""};
+	"wow",
+	"","","" };
 
 
 typedef struct { //단어 구조체
@@ -123,7 +121,6 @@ void display(void) {
 	printf("exit입력시 게임오버 \t\t [체력] %.1d \n", ph); //현재 체력 출력
 
 	printf("────────────────────────────────────────────────────────────────────────────\n");//상단
-
 	for (int i = 0; i < 20; i++)
 	{
 		printf("%*s%s\n", rain_words[i].x, "", rain_words[i].words); // x좌표에 맞춰서 랜덤 단어 출력
@@ -131,7 +128,7 @@ void display(void) {
 	}
 	printf("────────────────────────────────────────────────────────────────────────────\n");//하단
 	//cout << "____________________________________________________________________________" << endl;
-	if (strcmp(rain_words[20].words, " ")) // 20번째 줄에 단어가 있는 경우
+	if ((strlen(rain_words[20].words) >1) && (strcmp(rain_words[20].words, " "))) // 20번째 줄에 단어가 있는 경우
 		ph -= 1; // 단어 입력 못할때마다 체력이 1씩 감소됨
 
 	GotoXY(1, 23); //사용자에게 입력받을 위치로 이동
@@ -149,7 +146,7 @@ bool game_over(void) {
 	cout << "\tSave Successfully to ./filePath.mp3" << endl;
 	cout << "\n\n\n\n";
 	cout << "\r\tcontinue?(Y/N) " << endl;
-	
+
 	/*y나 Y를 입력하면 메뉴화면으로 넘어가고 n이나 N을 입력하면 종료됨.
 	 *그 외의 다른 입력은 무시함 */
 
@@ -157,17 +154,19 @@ bool game_over(void) {
 	string s;
 	fflush(stdin);
 	cout << ">> ";
-
-	while (1) 
+	
+	while (1)
 	{
 		s = _getch();
-		cout << s;
+
 		if (s == "y" | s == "Y") {
+			cout << s;
 			system("cls");
-			return true; 
+			return true;
 			break;
 		}
 		else if (s == "n" | s == "N") {
+			cout << s;
 			system("cls");
 			return false;
 			break;
@@ -181,7 +180,7 @@ bool game_over(void) {
 /********************************단어생성*******************************************/
 void random_word(void) {
 
-	for (int i = 20; i >= 0; i--) {
+	for (int i = 20; i > 0; i--) {
 		strcpy(rain_words[i].words, rain_words[i - 1].words); // 기존 단어는 한 줄씩 밀고
 		rain_words[i].x = rain_words[i - 1].x;
 		rain_words[i - 1].x = 0;
@@ -201,10 +200,9 @@ void play_game(void) {
 	start_thread(); //입력 스레드 시작
 
 	while (1) {
-
-		Sleep(SPEED); //지정한 시간만큼 단어 생성 지연
 		display(); //화면 출력
 		random_word();//단어 생성해주고
+		Sleep(SPEED); //지정한 시간만큼 단어 생성 지연
 		g_end_time = clock(); //해당 단어가 생성된 시간 기록
 
 		if (strcmp(input_word, EXIT) == 0)	break; //exit 입력시 종료
@@ -217,16 +215,18 @@ void play_game(void) {
 void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 {
 	int word_len; //사용자가 입력한 단어 중 정확하게 입력한 단어의 길이 저장할 변수
-	
+
 	while (!thr_exit) // 스레드가 중지될 때까지 입력을 계속 받음
 	{
+		Sleep(100);
 		gets_s(input_word);
+		Sleep(1000);
 
-		for (int i = 20; i >= 0; i--)
+		for (int i = 19; i >= 0; i--)
 		{
 			if (strstr(rain_words[i].words, input_word)) {// 입력한 단어와 입력값이 같은 경우 
+				strcpy(rain_words[i].words, ""); // 해당 단어 제거
 				word_len = strlen(input_word); //음악 프로세스 부분 함수에 넘길 단어 길이를 구함
-				strcpy(rain_words[i].words, " "); // 해당 단어 제거
 				break;
 			}
 		}
@@ -253,6 +253,7 @@ void help_function() // 도움말 함수
 	cout << "체력이 0이 되면 게임이 종료됩니다! " << endl;
 	cout << "메뉴로 돌아가고 싶다면 아무 키나 눌러주세요!" << endl;
 	_getch(); //아무키나 입력받음
+
 }
 
 bool menu_function() { //메인메뉴 함수
@@ -275,18 +276,39 @@ bool menu_function() { //메인메뉴 함수
 
 	cout << "\t\t\t\t\t\t MENU NUMBER >> ";
 
-	cin >> choice;
-	
+	fflush(stdin);
+	// 메뉴 선택할 번호 1,2,3 중 하나를 입력받음 (나머지 입력은 무시함)
+	while (1)
+	{
+		choice = _getch();
+
+		if (choice == 49) { //사용자가 1을 입력한 경우
+			cout << "1";
+			system("cls");
+			break;
+		}
+		else if (choice == 50) { //사용자가 2를 입력한 경우
+			cout << "2";
+			system("cls");
+			break;
+		}
+		else if (choice == 51) { //사용자가 3을 입력한 경우
+			cout << "3";
+			system("cls");
+			break;
+		}
+	}
+
 	switch (choice)
 	{
-	case 1:
+	case 49: //사용자가 1을 입력한 경우
 		play_game(); // 게임 시작 함수 호출
-		if (!game_over()) return false;   //만약 사용자가 continue?(Y/N) 질문에서 n을 입력한 경우 1을 반환하여 게임 종료시킴
+		if (!game_over()) return false;   //만약 사용자가 continue?(Y/N) 질문에서 n을 입력한 경우 false을 반환하여 게임 종료시킴
 		break;
-	case 2:
+	case 50: //사용자가 2를 입력한 경우
 		help_function(); // 도움말 출력 함수 호출
 		break;
-	case 3:
+	case 51: //사용자가 3을 입력한 경우
 		system("cls"); // 콘솔창 초기화
 		return false; // 1을 반환하고 게임 종료
 		break;

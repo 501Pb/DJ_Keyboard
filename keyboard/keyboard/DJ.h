@@ -22,6 +22,7 @@
 #define HAVE_STRUCT_TIMESPEC // windows.h와 pthread.h간의 시간 
 #define SPEED 1000 // 단어가 생성되는 간격 (단위 : ms). 조절하여 난이도 증감 가능. 500이하는 플레이 어려움. ns
 #define ONE_SECOND 1000 //1초에 해당하는 1000ms = 1s 
+
 #pragma comment(lib, "winmm.lib") //wav 파일 재생
 
 //#define SOUND_FILE_NAME "../sound/do.wav"
@@ -43,3 +44,4 @@ void GotoXY(int x, int y); //커서 이동 함수
 void* t_function(void* data); // 스레드화 할 사용자 입력 함수
 void start_thread(); // 스레드 시작 함수
 void end_thread(); // 스레드 중지 함수
+
