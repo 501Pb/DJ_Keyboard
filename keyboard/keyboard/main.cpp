@@ -14,7 +14,7 @@ int main(void) {
 	
 	game_init();//게임 초기설정
 	title();//타이틀
-	Music music = new Music();
+	Music music = Music();
 	system("cls");
 		
 	
