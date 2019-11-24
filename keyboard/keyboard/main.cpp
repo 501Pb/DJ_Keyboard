@@ -9,12 +9,12 @@ int main(void) {
 	
 	srand((unsigned int)time(0) * (unsigned int)GetCurrentThreadId());
 
-	// music thread
-	thread music_thread(&Music::music_start, &music);
-	
 	game_init();//게임 초기설정
 	title();//타이틀
 	Music music = Music();
+        // music thread
+	thread music_thread(&Music::music_start, &music);
+	
 	system("cls");
 		
 	
