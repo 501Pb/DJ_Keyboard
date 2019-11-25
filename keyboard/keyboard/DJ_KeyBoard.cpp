@@ -15,6 +15,7 @@ vector<string> v(MAP_Y, "│                                                     
 int ph; //체력 저장
 char input_word[1024]; // 사용자 입력 값 저장
 const char* EXIT = "exit"; // exit 문자열을 저장 (사용자가 exit를 입력했을 때 게임이 끝남)
+int word_len; //사용자가 입력한 단어 중 정확하게 입력한 단어의 길이 저장할 변수
 
 const char* AllWord[10] //산성비 게임에서 출력될 단어
 = {
@@ -24,7 +25,7 @@ const char* AllWord[10] //산성비 게임에서 출력될 단어
 	"rabbit",
 	"flower",
 	"box",
-	"wow",
+	"ball",
 	"","","" };
 
 
@@ -34,8 +35,10 @@ typedef struct { //단어 구조체
 } rain_word;
 rain_word rain_words[21]; //20번째 rains는 판정선(0~19까지만 화면 출력 가능)
 
-static pthread_t p_thread; // 스레드 이름
-static int thr_id; // 스레드의 아이디
+static pthread_t p_thread1; // 스레드 이름
+static int thr_id1; // 스레드의 아이디
+static pthread_t p_thread2; // 스레드 이름
+static int thr_id2; // 스레드의 아이디
 static int thr_exit = 1; // 스레드 종료 여부 상태
 
 /********************************초기화*****************************************/
@@ -47,27 +50,6 @@ void InitData(void)
 		rain_words[i].x = 0;
 		strcpy(rain_words[i].words, " ");
 	}
-	/*
-	파일열어서 배열에 저장
-	int position = 0;
-	char* allWord = new char[1024];
-
-	ifstream fin("g_words.txt"); //opening an input stream for file test.txt
-
-	if (fin.is_open())
-	{
-		while (!fin.eof() && position < 1024)
-		{
-			fin.get(allWord[position]);
-			position++;
-		}
-		AllWord[position - 1] = '\0';
-	}
-	else
-	{
-		cout << "File could not be opened." << endl;
-	}
-	*/
 }
 
 void game_init(void) {
@@ -116,26 +98,38 @@ void title(void) {
 
 void display(void) {
 
-	system("cls"); //콘솔창 초기화
-
+	int len; // 출력하는 단어 길이
+	
+	GotoXY(0, 0);
 	printf("exit입력시 게임오버 \t\t [체력] %.1d \n", ph); //현재 체력 출력
-
+	GotoXY(1, 1);
 	printf("────────────────────────────────────────────────────────────────────────────\n");//상단
-	for (int i = 0; i < 20; i++)
-	{
-		printf("%*s%s\n", rain_words[i].x, "", rain_words[i].words); // x좌표에 맞춰서 랜덤 단어 출력
+	GotoXY(1, 23);
+	printf("────────────────────────────────────────────────────────────────────────────\n");//하단
+	GotoXY(1, 25);
+	cout << ">>";
+
+	for (int i = 3; i <= 23; i++) {
+
+		GotoXY(rain_words[i-3].x, i); cout << rain_words[i-3].words;      // 현재 위치에 단어 출력
+
+		len = strlen(rain_words[i - 3].words); //출력한 단어 길이 구함
+		
+		if (i > 3) {
+			GotoXY(rain_words[i - 3].x, i - 1);
+			for (int i = 0; i < len; i++) cout << " "; // 이전 위치의 단어 출력을 지움
+		
+		}
+		Sleep(100);                                // 0.1초간 시간을 끈다.
 
 	}
-	printf("────────────────────────────────────────────────────────────────────────────\n");//하단
-	//cout << "____________________________________________________________________________" << endl;
+	
 	if ((strlen(rain_words[20].words) >1) && (strcmp(rain_words[20].words, " "))) // 20번째 줄에 단어가 있는 경우
 		ph -= 1; // 단어 입력 못할때마다 체력이 1씩 감소됨
-
-	GotoXY(1, 23); //사용자에게 입력받을 위치로 이동
-	cout << ">>";
 }
 
 bool game_over(void) {
+
 	system("cls");
 
 	cout << "\n\n\n\n";
@@ -152,9 +146,12 @@ bool game_over(void) {
 
 	GotoXY(5, 25); //사용자에게 입력받을 위치로 이동
 	string s;
-	fflush(stdin);
 	cout << ">> ";
-	
+//	fflush(stdin);
+//	cin.ignore(1000);
+	//while (getchar() != '\n');
+
+
 	while (1)
 	{
 		s = _getch();
@@ -197,31 +194,29 @@ void play_game(void) {
 	system("cls"); //콘솔창 초기화
 	InitData(); //단어 배열 초기화
 	g_start_time = clock();
-	start_thread(); //입력 스레드 시작
+	start_thread1(); //입력 스레드 시작
 
 	while (1) {
 		display(); //화면 출력
+		//단어 출력
 		random_word();//단어 생성해주고
-		Sleep(SPEED); //지정한 시간만큼 단어 생성 지연
+		//Sleep(100); //지정한 시간만큼 단어 생성 지연
 		g_end_time = clock(); //해당 단어가 생성된 시간 기록
 
 		if (strcmp(input_word, EXIT) == 0)	break; //exit 입력시 종료
 		if (ph <= 0) break; // 체력이 0 이면 게임 종료됨
 
 	}
-	end_thread(); // 입력 스레드 중지
+	end_thread1(); // 입력 스레드 중지
 }
 
-void* t_function(void* data) // 스레드 처리할 단어 입력 함수
+void* t_function1(void* data) // 스레드 처리할 단어 입력 함수
 {
-	int word_len; //사용자가 입력한 단어 중 정확하게 입력한 단어의 길이 저장할 변수
-
 	while (!thr_exit) // 스레드가 중지될 때까지 입력을 계속 받음
 	{
-		Sleep(100);
-		gets_s(input_word);
-		Sleep(1000);
-
+		if (gets_s(input_word)) system("cls");
+		//gets_s(input_word);
+		
 		for (int i = 19; i >= 0; i--)
 		{
 			if (strstr(rain_words[i].words, input_word)) {// 입력한 단어와 입력값이 같은 경우 
@@ -234,16 +229,44 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 	return 0;
 }
 
-void start_thread() // 스레드 시작 함수
+void start_thread1() // 스레드 시작 함수
 {
 	thr_exit = 0;
-	thr_id = pthread_create(&p_thread, NULL, t_function, NULL); // 스레드 생성
+	thr_id1 = pthread_create(&p_thread1, NULL, t_function1, NULL); // 스레드 생성
 }
 
-void end_thread() // 스레드 중지 함수
+void end_thread1() // 스레드 중지 함수
 {
 	thr_exit = 1;
-	pthread_cancel(p_thread); // 스레드 종료
+	pthread_cancel(p_thread1); // 스레드 종료
+}
+
+void* t_function2(void* data) // 스레드 단어 출력 함수
+{
+	while (!thr_exit) // 스레드가 중지될 때까지 입력을 계속 받음
+	{
+		for (int i = 2; i <= 22; i++) {
+
+			GotoXY(rain_words[i - 2].x, i); cout << rain_words[i - 2].words;      // 현재 위치에 단어 출력
+
+			GotoXY(rain_words[i - 2].x, i - 1); cout << "   "; // 이전 위치의 단어 지움
+
+			Sleep(100);
+		}
+	}
+	return 0;
+}
+
+void start_thread2() // 스레드 시작 함수
+{
+	thr_exit = 0;
+	thr_id2 = pthread_create(&p_thread2, NULL, t_function2, NULL); // 스레드 생성
+}
+
+void end_thread2() // 스레드 중지 함수
+{
+	thr_exit = 1;
+	pthread_cancel(p_thread2); // 스레드 종료
 }
 
 void help_function() // 도움말 함수
