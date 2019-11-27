@@ -361,8 +361,3 @@ void textcolor(int foreground, int background)  //글자 색상 출력 함수
 	int color = foreground + background * 16;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
-
-
-//초기화하는 부분에서 현재 콘솔창 크기를 가져와서 크기 저장해두고 좌표 찍어놓고 위치 박아버림!
-//그 후 나중에 본인 입력받고 싶은 함수호출할때 좌표 찍어놓고 위치 박아버리기!
-//입력받을 때 커서 입력받는 곳으로 돌리면 어떻게 될까..?
