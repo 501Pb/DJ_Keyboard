@@ -106,22 +106,22 @@ void display(void) {
 	printf("────────────────────────────────────────────────────────────────────────────\n");//상단
 	GotoXY(1, 23);
 	printf("────────────────────────────────────────────────────────────────────────────\n");//하단
-	GotoXY(1, 25);
+	GotoXY(5, 25); //사용자 입력부분으로 이동
 	cout << ">>";
 
 	for (int i = 3; i <= 23; i++) {
-
-		GotoXY(rain_words[i-3].x, i); cout << rain_words[i-3].words;      // 현재 위치에 단어 출력
-
-		len = strlen(rain_words[i - 3].words); //출력한 단어 길이 구함
 		
-		if (i > 3) {
-			GotoXY(rain_words[i - 3].x, i - 1);
-			for (int i = 0; i < len; i++) cout << " "; // 이전 위치의 단어 출력을 지움
-		
-		}
-		Sleep(100);                                // 0.1초간 시간을 끈다.
+			GotoXY(rain_words[i - 3].x, i); cout << rain_words[i - 3].words;      // 현재 위치에 단어 출력
 
+			len = strlen(rain_words[i - 3].words); //출력한 단어 길이 구함
+
+			if (i > 3) {
+				GotoXY(rain_words[i - 3].x, i - 1);
+				for (int i = 0; i < len; i++) cout << " "; // 이전 위치의 단어 출력 지움
+			}
+			GotoXY(7, 25); //사용자 입력받는 위치로 이동
+			Sleep(100);
+		// 0.1초간 시간을 끈다.
 	}
 	
 	if ((strlen(rain_words[20].words) >1) && (strcmp(rain_words[20].words, " "))) // 20번째 줄에 단어가 있는 경우
@@ -147,10 +147,10 @@ bool game_over(void) {
 	GotoXY(5, 25); //사용자에게 입력받을 위치로 이동
 	string s;
 	cout << ">> ";
-//	fflush(stdin);
-//	cin.ignore(1000);
+	
+	//fflush(stdin);
+	//cin.ignore(1000);
 	//while (getchar() != '\n');
-
 
 	while (1)
 	{
@@ -169,7 +169,6 @@ bool game_over(void) {
 			break;
 		}
 	}
-
 }
 
 //게임오버화면
@@ -195,27 +194,28 @@ void play_game(void) {
 	InitData(); //단어 배열 초기화
 	g_start_time = clock();
 	start_thread1(); //입력 스레드 시작
+	//start_thread2(); //출력 스레드 시작
 
 	while (1) {
 		display(); //화면 출력
 		//단어 출력
 		random_word();//단어 생성해주고
-		//Sleep(100); //지정한 시간만큼 단어 생성 지연
+		//Sleep(200); //지정한 시간만큼 단어 생성 지연
 		g_end_time = clock(); //해당 단어가 생성된 시간 기록
 
 		if (strcmp(input_word, EXIT) == 0)	break; //exit 입력시 종료
 		if (ph <= 0) break; // 체력이 0 이면 게임 종료됨
-
 	}
+
 	end_thread1(); // 입력 스레드 중지
+	//end_thread2();  //출력 스레드 중지
 }
 
 void* t_function1(void* data) // 스레드 처리할 단어 입력 함수
 {
 	while (!thr_exit) // 스레드가 중지될 때까지 입력을 계속 받음
 	{
-		if (gets_s(input_word)) system("cls");
-		//gets_s(input_word);
+		if (gets_s(input_word)) { system("cls"); } //단어 입력하고 엔터치면 화면 초기화시켜주고 0.1초 기다려줌
 		
 		for (int i = 19; i >= 0; i--)
 		{
@@ -241,17 +241,28 @@ void end_thread1() // 스레드 중지 함수
 	pthread_cancel(p_thread1); // 스레드 종료
 }
 
-void* t_function2(void* data) // 스레드 단어 출력 함수
+void* t_function2(void* data) // 스레드 단어 산성비로 출력하는 함수
 {
+	int len; //단어길이
 	while (!thr_exit) // 스레드가 중지될 때까지 입력을 계속 받음
 	{
-		for (int i = 2; i <= 22; i++) {
+		for (int i = 3; i <= 23; i++) {
 
-			GotoXY(rain_words[i - 2].x, i); cout << rain_words[i - 2].words;      // 현재 위치에 단어 출력
+			GotoXY(rain_words[i - 3].x, i); cout << rain_words[i - 3].words;      // 현재 위치에 단어 출력
 
-			GotoXY(rain_words[i - 2].x, i - 1); cout << "   "; // 이전 위치의 단어 지움
+			len = strlen(rain_words[i - 3].words); //출력한 단어 길이 구함
+
+		//	strcpy(rain_words[i - 3].words, " ");
+
+
+			if (i > 3) {
+				GotoXY(rain_words[i - 3].x, i - 1);
+				for (int i = 0; i < len; i++) cout << " "; // 이전 위치의 단어 출력을 지움
+				//strcpy(rain_words[i - 3].words , " ");
+			}
 
 			Sleep(100);
+			// 0.1초간 시간을 끈다.
 		}
 	}
 	return 0;
@@ -276,7 +287,6 @@ void help_function() // 도움말 함수
 	cout << "체력이 0이 되면 게임이 종료됩니다! " << endl;
 	cout << "메뉴로 돌아가고 싶다면 아무 키나 눌러주세요!" << endl;
 	_getch(); //아무키나 입력받음
-
 }
 
 bool menu_function() { //메인메뉴 함수
@@ -341,8 +351,14 @@ bool menu_function() { //메인메뉴 함수
 	return true;
 }
 
-void GotoXY(int x, int y)		// 커서 위치 이동
+void GotoXY(int x, int y)		// 커서 위치 이동하는 함수
 {
 	COORD Pos = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 }
+
+//구글에 커서 옮기는 함수 
+
+//초기화하는 부분에서 현재 콘솔창 크기를 가져와서 크기 저장해두고 좌표 찍어놓고 위치 박아버림!
+//그 후 나중에 본인 입력받고 싶은 함수호출할때 좌표 찍어놓고 위치 박아버리기!
+//입력받을 때 커서 입력받는 곳으로 돌리면 어떻게 될까..?
