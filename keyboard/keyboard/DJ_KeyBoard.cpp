@@ -46,7 +46,7 @@ void InitData(void)
 void game_init(void) {
 	//g_start_time = clock(); 
 	//시드
-	srand((unsigned int)time(NULL));
+	//srand((unsigned int)time(NULL));
 	//커서 숨기기
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.dwSize = 1;
