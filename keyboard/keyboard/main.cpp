@@ -12,10 +12,7 @@ int main(void) {
 	
 	srand((unsigned int)time(0) * (unsigned int)GetCurrentThreadId());
 
-	game_init();//게임 초기?�정
-	
-	Music music = Music();
-        // music thread
+	Music music = Music(); // music thread
 	thread music_thread(&Music::music_start, &music);
 	
 	system("cls");
