@@ -25,10 +25,9 @@ int main(void) {
 		status = game_status::Start;
 
 		if (!menu_function())
-		{
-			status = game_status::GameOver;
 			break;
-		}
+
+		status = game_status::GameOver;
 	} //게임오버 당할때까지
 	
 	status = game_status::End;
