@@ -6,6 +6,9 @@
 #include <Windows.h>
 #include <string>
 #include <iostream>
+#include <io.h>
+#include <direct.h>
+
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 #pragma warning(disable:4996)
 #define SLEEPTIME 200

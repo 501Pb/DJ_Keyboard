@@ -61,6 +61,9 @@ void Record(game_status* status, string * filename)
 		printf("Could not create audio engine or audio recoder\n");
 		return ;
 	}
+	
+	if (access("../saveMusic", 0) == -1)
+		mkdir("../saveMusic");
 
 	while (*status == game_status::Init)
 		Sleep(SLEEPTIME);
