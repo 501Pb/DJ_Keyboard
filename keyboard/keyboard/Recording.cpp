@@ -54,13 +54,16 @@ void writeWaveFile(const char* filename, SAudioStreamFormat format, void* data)
 void Record(game_status* status, string * filename)
 {
 	ISoundEngine* engine = createIrrKlangDevice();
-	IAudioRecorder* recorder = createIrrKlangAudioRecorder(engine);
+	IAudioRecorder* recorder = createIrrKlangAudioRecorder(engine, ESOD_DIRECT_SOUND);
 
 	if (!engine || !recorder)
 	{
 		printf("Could not create audio engine or audio recoder\n");
 		return ;
 	}
+
+	if (access("../saveMusic", 0) == -1)
+		mkdir("../saveMusic");
 
 	while (*status == game_status::Init)
 		Sleep(SLEEPTIME);
@@ -77,7 +80,7 @@ void Record(game_status* status, string * filename)
 		recorder->stopRecordingAudio();
 
 		// save recording
-		writeWaveFile(("../music/" + *filename + ".wav").c_str(), recorder->getAudioFormat(), recorder->getRecordedAudioData());
+		writeWaveFile(("../saveMusic/" + *filename + ".wav").c_str(), recorder->getAudioFormat(), recorder->getRecordedAudioData());
 
 		while (*status == game_status::GameOver)
 			Sleep(SLEEPTIME);

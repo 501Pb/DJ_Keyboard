@@ -1,16 +1,11 @@
 #include "DJ.h"
 #include "word.h"
+#include "music.h"
 /********************************전역변수*****************************************/
+Music music = Music();
 clock_t g_start_time;                           // 기준 시각(게임 시작)
 clock_t g_end_time;								// 게임 종료 시간
 double g_falling_speed = 2.0;                   // 단어 낙하 시각(초 단위)
-
-Word wd[WORD_NUM];
-// : txt 파일에서 모든 Word를 추출해내 저장한 배열
-vector<Word> word;
-// : 생성된 단어들을 저장하는 vector
-vector<string> v(MAP_Y, "│                                                                          │");
-//출력할 단어들을 string으로 가지고 있는 vector 기본값으로 |    | 출력값을 가지고 있음.(맵 사이드)
 
 int ph; //체력 저장
 char input_word[1024]; // 사용자 입력 값 저장
@@ -19,9 +14,9 @@ int word_len; //사용자가 입력한 단어 중 정확하게 입력한 단어의 길이 저장할 변수
 bool playing;
 const char* AllWord[10] //산성비 게임에서 출력될 단어
 = {
-	"girugi",
+	"DJ",
 	"tiger",
-	"DJ_keyboard",
+	"keyboard",
 	"rabbit",
 	"flower",
 	"box",
@@ -150,10 +145,6 @@ bool game_over(void) {
 	GotoXY(5, 25); //사용자에게 입력받을 위치로 이동
 	string s;
 	cout << ">> ";
-	
-	//fflush(stdin);
-	//cin.ignore(1000);
-	//while (getchar() != '\n');
 
 	while (1)
 	{
@@ -186,7 +177,7 @@ void random_word(void) { //단어 생성 함수
 	strcpy(rain_words[0].words, AllWord[rand() % 10]); // 새로운 단어를 무작위로 배치
 }
 
-void play_game(void) { //게임 진행 함수
+void play_game() { //게임 진행 함수
 
 	textcolor(LIGHTBLUE, BLACK); //화면은 화이트, 글자는 블루로 출력
 	ph = 3; //체력 3으로 초기화
@@ -238,6 +229,7 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 				if (strstr(rain_words[i].words, input_word)) {// 입력한 단어와 입력값이 같은 경우 
 					strcpy(rain_words[i].words, ""); // 해당 단어 제거
 					word_len = strlen(input_word); //음악 프로세스 부분 함수에 넘길 단어 길이를 구함
+					music.note_adder(word_len);
 					break;
 				}
 			}

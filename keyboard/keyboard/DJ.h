@@ -6,7 +6,8 @@
 #define WORD_NUM 4
 
 #define HAVE_STRUCT_TIMESPEC //thread 'timespec' 에러 방지 
-#include "word.h"
+//#include "word.h"
+//#include "music.h"
 #include <iostream>
 #include <fstream>
 #include <stdlib.h> //system()
@@ -20,7 +21,7 @@
 #include <cstring>
 #include <pthread.h> //thread() 
 #define HAVE_STRUCT_TIMESPEC // windows.h와 pthread.h간의 시간 
-#define SPEED 500 // 단어가 생성되는 간격 (단위 : ms). 조절하여 난이도 증감 가능. 500이하는 플레이 어려움. ns
+#define SPEED 500 // 단어가 생성되는 간격 (단위 : ms). 500이하는 플레이 어려움. ns
 #define ONE_SECOND 1000 //1초에 해당하는 1000ms = 1s 
 
 /*콘솔 글자 색상*/
@@ -51,7 +52,7 @@ using namespace std;
 void title(void);
 void game_init(void);
 bool game_over(void);
-void play_game(void);
+void play_game();
 void InitData(void);
 void display(void);
 
@@ -65,4 +66,3 @@ void textcolor(int foreground, int background); //글자 색상 출력 함수
 void* t_function(void* data); // 스레드화 할 사용자 입력 함수
 void start_thread(); // 스레드 시작 함수
 void end_thread(); // 스레드 중지 함수
-
