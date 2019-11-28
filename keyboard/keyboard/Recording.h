@@ -1,3 +1,6 @@
+#ifndef __RECORDING__H__
+#define __RECORDING__H__
+
 #include <irrKlang.h>
 #include <thread>
 #include <Windows.h>
@@ -20,3 +23,4 @@ enum class game_status
 };
 
 void Record(game_status*, string*);
+#endif
