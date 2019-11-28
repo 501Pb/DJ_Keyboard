@@ -20,7 +20,7 @@ git clone https://github.com/501Pb/DJ_Keyboard.git
 ### setting
 1. 프로젝트 세팅에 들어 갑니다.
 2. C/C++ 구성 속성에 추가 포함 디렉토리에 해당 include 폴더를 추가합니다.
-<img href="https://user-images.githubusercontent.com/40608930/69818970-3e8fb100-1241-11ea-80d2-5a1ea0481c78.png">
+![C__추가포함](https://user-images.githubusercontent.com/40608930/69818970-3e8fb100-1241-11ea-80d2-5a1ea0481c78.png)
 3. 링커의 추가 라이브러리 디렉터리에 해당 lib 폴더를 추가합니다.
 ![링커_일반](https://user-images.githubusercontent.com/40608930/69818999-523b1780-1241-11ea-83f8-65d8b0927c31.png)
 4. 링커 - 입력의 추가 종속성에 irrKlang.lib을 추가합니다.
