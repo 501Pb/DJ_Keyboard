@@ -3,31 +3,38 @@
 #include "Recording.h"
 
 int main(void) {
-	game_status status = game_status::Init; // ê²Œì„ ìƒíƒœ í‘œì‹œ
-	string filename = "music";	// filename ì €ì¥
-	thread thread_recording(Record, &status, &filename); // ë…¹ìŒìš© ì“°ë ˆë“œ
+
+	game_init();//°ÔÀÓ ÃÊ±â¼³Á¤
+
+	game_status status = game_status::Init; // ê²Œì„ ?íƒœ ?œì‹œ
+	string filename = "music";	// filename ?€??
+	thread thread_recording(Record, &status, &filename); // ?¹ìŒ???°ë ˆ??
 	
 	srand((unsigned int)time(0) * (unsigned int)GetCurrentThreadId());
 
-	// music thread
+	game_init();//ê²Œì„ ì´ˆê¸°?¤ì •
+	
+	Music music = Music();
+        // music thread
 	thread music_thread(&Music::music_start, &music);
 	
-	game_init();//ê²Œì„ ì´ˆê¸°ì„¤ì •
-	title();//íƒ€ì´í‹€
-	Music music = new Music();
 	system("cls");
 		
 	
-	do {
+	while (1) {
 		status = game_status::Start;
-		
-		play_game();
 
-		status = game_status::GameOver;
-	} while (game_over());//ê²Œì„ì˜¤ë²„ ë‹¹í• ë•Œê¹Œì§€
+		if (!menu_function())
+		{
+			status = game_status::GameOver;
+			break;
+		}
+	} //°ÔÀÓ¿À¹ö ´çÇÒ¶§±îÁö
 	
 	status = game_status::End;
-	thread_recording.join(); // ì“°ë ˆë“œ ì¢…ë£Œê¹Œì§€ ëŒ€ê¸°
+
+	thread_recording.join(); // ?°ë ˆ??ì¢…ë£Œê¹Œì? ?€ê¸?
+
 
 	return 0;
 }
