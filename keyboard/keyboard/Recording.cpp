@@ -54,7 +54,7 @@ void writeWaveFile(const char* filename, SAudioStreamFormat format, void* data)
 void Record(game_status* status, string * filename)
 {
 	ISoundEngine* engine = createIrrKlangDevice();
-	IAudioRecorder* recorder = createIrrKlangAudioRecorder(engine);
+	IAudioRecorder* recorder = createIrrKlangAudioRecorder(engine, ESOD_DIRECT_SOUND);
 
 	if (!engine || !recorder)
 	{
