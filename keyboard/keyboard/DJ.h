@@ -20,7 +20,7 @@
 #include <cstring>
 #include <pthread.h> //thread() 
 #define HAVE_STRUCT_TIMESPEC // windows.h와 pthread.h간의 시간 
-#define SPEED 500 // 단어가 생성되는 간격 (단위 : ms). 조절하여 난이도 증감 가능. 500이하는 플레이 어려움. ns
+#define SPEED 500 // 단어가 생성되는 간격 (단위 : ms). 500이하는 플레이 어려움. ns
 #define ONE_SECOND 1000 //1초에 해당하는 1000ms = 1s 
 
 /*콘솔 글자 색상*/

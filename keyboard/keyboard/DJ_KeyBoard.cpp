@@ -143,10 +143,6 @@ bool game_over(void) {
 	GotoXY(5, 25); //사용자에게 입력받을 위치로 이동
 	string s;
 	cout << ">> ";
-	
-	//fflush(stdin);
-	//cin.ignore(1000);
-	//while (getchar() != '\n');
 
 	while (1)
 	{
