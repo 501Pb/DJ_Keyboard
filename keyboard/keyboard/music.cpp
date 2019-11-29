@@ -13,6 +13,7 @@ using namespace std;
 
 Music::Music(int nesting, int bpm, bool option1) {
 	music = createIrrKlangDevice();
+	this->nesting = nesting;
 	this->bpm = bpm;
 	optionSoundErase = option1;
 	playing = true;
@@ -68,4 +69,9 @@ void Music::note_clear() {
 	note[0][0] = note[2][0] = note[8][0] = note[10][0] = note[16][0] = note[21][0] = note[23][0] = note[24][0] = note[26][0] = 15;
 	// Snare
 	note[4][1] = note[12][1] = note[20][1] = note[28][1] = 16;
+}
+
+void Music::wrong_input() {
+	note_clear();
+	music->play2D("./music/Wrong.wav");
 }
