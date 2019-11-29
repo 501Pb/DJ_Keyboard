@@ -135,7 +135,7 @@ bool game_over(void) {
 	cout << "\t¦¢ ¦¨¦§¦¡¦©¦¢¦¢¦¢¦§¦©     ¦¢ ¦¢¦¦¦¤¦£¦¥¦§¦© ¦§¦¨¦¥" << endl;
 	cout << "\t¦¦¦¡¦¥¦ª ¦ª¦ª ¦ª¦¦¦¡¦¥    ¦¦¦¡¦¥ ¦¦¦¥ ¦¦¦¡¦¥¦ª¦¦¦¡" << endl;
 	cout << "\n\n\n";
-	cout << "\tSave Successfully to ./filePath.mp3" << endl;
+	cout << "\tSave Successfully to ../saveMusic/music.mp3" << endl;
 	cout << "\n\n\n\n";
 	cout << "\r\tcontinue?(Y/N) " << endl;
 
