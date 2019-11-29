@@ -227,7 +227,7 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 		if (c == 13) {
 			for (int i = 19; i >= 0; i--)
 			{
-				if (strstr(rain_words[i].words, input_word)) {// 입력한 단어와 입력값이 같은 경우 
+				if (strcmp(rain_words[i].words, input_word) == 0) {// 입력한 단어와 입력값이 같은 경우 
 					strcpy(rain_words[i].words, ""); // 해당 단어 제거
 					word_len = strlen(input_word); //음악 프로세스 부분 함수에 넘길 단어 길이를 구함
 					music.note_adder(word_len);
