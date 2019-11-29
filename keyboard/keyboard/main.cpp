@@ -30,13 +30,11 @@ int main(void) {
 		status = game_status::GameOver;
 	} //°ÔÀÓ¿À¹ö ´çÇÒ¶§±îÁö
 	
-	music,music_stop();
+	music.music_stop();
 	status = game_status::End;
 
 	music_thread.join();
 	thread_recording.join(); // ?°ë ˆ??ì¢…ë£Œê¹Œì? ?€ê¸?
-
-	~music();
 
 	return 0;
 }
