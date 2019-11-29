@@ -52,7 +52,7 @@ public:
 	void note_adder(int length);
 	void note_clear();
 	~Music() { music->drop(); }
-
+	void wrong_input();
 };
 
 #endif
