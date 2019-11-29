@@ -45,7 +45,7 @@ private:
 	void note_push(vector<int> & note, int sound);
 
 public:
-	Music(int nesting = 2, int bpm = 130, bool option1 = true);
+	Music(int nesting = 2, int bpm = 130, bool option1 = false);
 	void music_start();
 	void music_stop() { playing = false; }
 	void bpm_changer(int bpm) { this->bpm = bpm; }
