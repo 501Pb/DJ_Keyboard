@@ -16,12 +16,12 @@ const char* AllWord[10] //산성비 게임에서 출력될 단어
 = {
 	"DJ",
 	"tiger",
-	"keyboard",
+	"key",
 	"rabbit",
 	"flower",
 	"box",
 	"ball",
-	"","","" };
+	"board","","" };
 
 
 typedef struct { //단어 구조체
@@ -92,7 +92,7 @@ void title(void) {
 void display(void) {
 
 	int len; // 출력하는 단어 길이
-	
+
 	GotoXY(0, 0);
 	printf("\t exit 입력시 게임오버 \t\t\t [체력] %.1d \n", ph); //현재 체력 출력
 	GotoXY(1, 1);
@@ -111,10 +111,12 @@ void display(void) {
 			len = strlen(rain_words[i - 3].words); //출력한 단어 길이를 len변수에 저장
 			
 			if (i > 3) {
+				
 				GotoXY(rain_words[i - 3].x, i - 1); //이전 위치의 단어로 이동
 				
 				for (int i = 0; i < len; i++) cout << " "; // 이전 위치의 단어 출력 지움
 			}
+			
 			GotoXY(pos, 25); //사용자 입력부분
 			printf("%s", input_word);
 
@@ -167,13 +169,16 @@ bool game_over(void) {
 void random_word(void) { //단어 생성 함수
 
 	for (int i = 20; i > 0; i--) {
-		strcpy(rain_words[i].words, rain_words[i - 1].words); // 기존 단어는 한 줄씩 밀고
-		rain_words[i].x = rain_words[i - 1].x;
-		rain_words[i - 1].x = 0;
+		
+		strcpy(rain_words[i].words, rain_words[i - 1].words); // 기존 단어를 다음 배열로 넘김
+		rain_words[i].x = rain_words[i - 1].x; //기존 단어의 x좌표를 다음 배열 위치로 넘김
+		rain_words[i - 1].x = 0; 
 		strcpy(rain_words[i - 1].words, " "); // 뒷 줄은 공백처리
 	}
-	rain_words[0].x = rand() % 53;
+
+	rain_words[0].x = rand() % 12 * 6; //난수 생성 (5의 배수 난수 생성)
 	srand(time(NULL));
+	if (rain_words[0].x == rain_words[1].x) rain_words[0].x = rand() % 12 * 6; //단어의 x좌표가 같으면 난수 다시 생성
 	strcpy(rain_words[0].words, AllWord[rand() % 10]); // 새로운 단어를 무작위로 배치
 }
 
@@ -190,7 +195,6 @@ void play_game() { //게임 진행 함수
 		display(); //화면 출력
 		//단어 출력
 		random_word();//단어 생성해주고
-		//Sleep(200); //지정한 시간만큼 단어 생성 지연
 		g_end_time = clock(); //해당 단어가 생성된 시간 기록
 
 		if (!playing)	break; //exit 입력시 종료
