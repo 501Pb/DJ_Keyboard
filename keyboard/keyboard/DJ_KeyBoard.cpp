@@ -1,6 +1,8 @@
 #include "DJ.h"
 #include "word.h"
+#include "music.h"
 /********************************전역변수*****************************************/
+Music music = Music();
 clock_t g_start_time;                           // 기준 시각(게임 시작)
 clock_t g_end_time;								// 게임 종료 시간
 double g_falling_speed = 2.0;                   // 단어 낙하 시각(초 단위)
@@ -46,7 +48,7 @@ void InitData(void)
 void game_init(void) {
 	//g_start_time = clock(); 
 	//시드
-	//srand((unsigned int)time(NULL));
+	srand((unsigned int)time(NULL));
 	//커서 숨기기
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.dwSize = 1;
@@ -175,7 +177,7 @@ void random_word(void) { //단어 생성 함수
 	strcpy(rain_words[0].words, AllWord[rand() % 10]); // 새로운 단어를 무작위로 배치
 }
 
-void play_game(void) { //게임 진행 함수
+void play_game() { //게임 진행 함수
 
 	textcolor(LIGHTBLUE, BLACK); //화면은 화이트, 글자는 블루로 출력
 	ph = 3; //체력 3으로 초기화
@@ -227,6 +229,7 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 				if (strstr(rain_words[i].words, input_word)) {// 입력한 단어와 입력값이 같은 경우 
 					strcpy(rain_words[i].words, ""); // 해당 단어 제거
 					word_len = strlen(input_word); //음악 프로세스 부분 함수에 넘길 단어 길이를 구함
+					music.note_adder(word_len);
 					break;
 				}
 			}

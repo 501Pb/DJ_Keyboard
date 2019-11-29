@@ -6,7 +6,8 @@
 #define WORD_NUM 4
 
 #define HAVE_STRUCT_TIMESPEC //thread 'timespec' 에러 방지 
-#include "word.h"
+//#include "word.h"
+//#include "music.h"
 #include <iostream>
 #include <fstream>
 #include <stdlib.h> //system()
@@ -51,7 +52,7 @@ using namespace std;
 void title(void);
 void game_init(void);
 bool game_over(void);
-void play_game(void);
+void play_game();
 void InitData(void);
 void display(void);
 
