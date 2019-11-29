@@ -35,6 +35,7 @@ int main(void) {
 
 	music_thread.join();
 	thread_recording.join(); // ?°ë ˆ??ì¢…ë£Œê¹Œì? ?€ê¸?
-
+	
+	music.~Music();
 	return 0;
 }
