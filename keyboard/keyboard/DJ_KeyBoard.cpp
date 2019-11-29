@@ -232,6 +232,7 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 					strcpy(rain_words[i].words, ""); // 해당 단어 제거
 					word_len = strlen(input_word); //음악 프로세스 부분 함수에 넘길 단어 길이를 구함
 					music.note_adder(word_len);
+					check = true;
 					break;
 				}
 			}
