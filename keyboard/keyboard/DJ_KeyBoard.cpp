@@ -118,8 +118,8 @@ void display(void) {
 			GotoXY(pos, 25); //사용자 입력부분
 			printf("%s", input_word);
 
-		Sleep(100);
-		// 0.1초간 시간을 끈다.
+		Sleep(60000 / (130 * 16));
+		// 단어가 떨어지는 속도 조절
 	}
 	
 	if ((strlen(rain_words[20].words) >1) && (strcmp(rain_words[20].words, " "))) // 20번째 줄에 단어가 있는 경우
