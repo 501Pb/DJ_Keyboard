@@ -131,9 +131,9 @@ bool game_over(void) {
 	system("cls");
 	music.note_clear();
 	cout << "\n\n\n\n";
-	cout << "\t┌─┐┌─┐┌┬┐┌─┐  ┌─┐┬  ┬┌─┐┬─┐" << endl;
-	cout << "\t│ ┬├─┤│││├┤     │ │└┐┌┘├┤ ├┬┘" << endl;
-	cout << "\t└─┘┴ ┴┴ ┴└─┘    └─┘ └┘ └─┘┴└─" << endl;
+	cout << "\t┌─┐┌─┐┌┬┐┌─┐  ┌─┐┬  ┬┌─┐┬─┐\n";
+	cout << "\t│ ┬├─┤│││├┤     │ │└┐┌┘├┤ ├┬┘\n";
+	cout << "\t└─┘┴ ┴┴ ┴└─┘    └─┘ └┘ └─┘┴└─\n";
 	cout << "\n\n\n";
 	cout << "\tSave Successfully to ../saveMusic/music.mp3" << endl;
 	cout << "\n\n\n\n";
