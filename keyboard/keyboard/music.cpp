@@ -44,13 +44,13 @@ void Music::music_start() {
 }
 
 void Music::note_adder(int length) {
-	cout << "[+] length : " << length << endl;
+	//cout << "[+] length : " << length << endl;
 	// adding after present beat
 	int start = beat + 1 ;
 	for (int i = 0; i < length; i++) {
 		int sound = rand() % 14 + 1;
 		note_push(note[start % 32], sound);
-		cout << "Add " << sound << " at " << start%32 << endl;
+		//cout << "Add " << sound << " at " << start%32 << endl;
 		++start;
 	}
 }
