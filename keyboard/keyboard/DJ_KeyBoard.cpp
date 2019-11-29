@@ -1,18 +1,18 @@
 #include "DJ.h"
 #include "word.h"
 #include "music.h"
-/********************************Àü¿ªº¯¼ö*****************************************/
+/********************************ì „ì—­ë³€ìˆ˜*****************************************/
 Music music = Music();
-clock_t g_start_time;                           // ±âÁØ ½Ã°¢(°ÔÀÓ ½ÃÀÛ)
-clock_t g_end_time;								// °ÔÀÓ Á¾·á ½Ã°£
-double g_falling_speed = 2.0;                   // ´Ü¾î ³«ÇÏ ½Ã°¢(ÃÊ ´ÜÀ§)
+clock_t g_start_time;                           // ê¸°ì¤€ ì‹œê°(ê²Œì„ ì‹œì‘)
+clock_t g_end_time;								// ê²Œì„ ì¢…ë£Œ ì‹œê°„
+double g_falling_speed = 2.0;                   // ë‹¨ì–´ ë‚™í•˜ ì‹œê°(ì´ˆ ë‹¨ìœ„)
 
-int ph; //Ã¼·Â ÀúÀå
-char input_word[1024]; // »ç¿ëÀÚ ÀÔ·Â °ª ÀúÀå
-const char* EXIT = "exit"; // exit ¹®ÀÚ¿­À» ÀúÀå (»ç¿ëÀÚ°¡ exit¸¦ ÀÔ·ÂÇßÀ» ¶§ °ÔÀÓÀÌ ³¡³²)
-int word_len; //»ç¿ëÀÚ°¡ ÀÔ·ÂÇÑ ´Ü¾î Áß Á¤È®ÇÏ°Ô ÀÔ·ÂÇÑ ´Ü¾îÀÇ ±æÀÌ ÀúÀåÇÒ º¯¼ö
+int ph; //ì²´ë ¥ ì €ì¥
+char input_word[1024]; // ì‚¬ìš©ì ì…ë ¥ ê°’ ì €ì¥
+const char* EXIT = "exit"; // exit ë¬¸ìì—´ì„ ì €ì¥ (ì‚¬ìš©ìê°€ exitë¥¼ ì…ë ¥í–ˆì„ ë•Œ ê²Œì„ì´ ëë‚¨)
+int word_len; //ì‚¬ìš©ìê°€ ì…ë ¥í•œ ë‹¨ì–´ ì¤‘ ì •í™•í•˜ê²Œ ì…ë ¥í•œ ë‹¨ì–´ì˜ ê¸¸ì´ ì €ì¥í•  ë³€ìˆ˜
 bool playing;
-const char* AllWord[10] //»ê¼ººñ °ÔÀÓ¿¡¼­ Ãâ·ÂµÉ ´Ü¾î
+const char* AllWord[10] //ì‚°ì„±ë¹„ ê²Œì„ì—ì„œ ì¶œë ¥ë  ë‹¨ì–´
 = {
 	"DJ",
 	"tiger",
@@ -24,17 +24,17 @@ const char* AllWord[10] //»ê¼ººñ °ÔÀÓ¿¡¼­ Ãâ·ÂµÉ ´Ü¾î
 	"board","","" };
 
 
-typedef struct { //´Ü¾î ±¸Á¶Ã¼
-	int x; //´Ü¾îÀÇ xÁÂÇ¥
-	char words[20]; //´Ü¾î ÀúÀå °ø°£
+typedef struct { //ë‹¨ì–´ êµ¬ì¡°ì²´
+	int x; //ë‹¨ì–´ì˜ xì¢Œí‘œ
+	char words[20]; //ë‹¨ì–´ ì €ì¥ ê³µê°„
 } rain_word;
-rain_word rain_words[21]; //20¹øÂ° rains´Â ÆÇÁ¤¼±(0~19±îÁö¸¸ È­¸é Ãâ·Â °¡´É)
+rain_word rain_words[21]; //20ë²ˆì§¸ rainsëŠ” íŒì •ì„ (0~19ê¹Œì§€ë§Œ í™”ë©´ ì¶œë ¥ ê°€ëŠ¥)
 
-static pthread_t p_thread1; // ½º·¹µå ÀÌ¸§
-static int thr_id1; // ½º·¹µåÀÇ ¾ÆÀÌµğ
-static int thr_exit = 1; // ½º·¹µå Á¾·á ¿©ºÎ »óÅÂ
+static pthread_t p_thread1; // ìŠ¤ë ˆë“œ ì´ë¦„
+static int thr_id1; // ìŠ¤ë ˆë“œì˜ ì•„ì´ë””
+static int thr_exit = 1; // ìŠ¤ë ˆë“œ ì¢…ë£Œ ì—¬ë¶€ ìƒíƒœ
 
-/********************************ÃÊ±âÈ­*****************************************/
+/********************************ì´ˆê¸°í™”*****************************************/
 void InitData(void)
 {
 	int i;
@@ -47,24 +47,24 @@ void InitData(void)
 
 void game_init(void) {
 	//g_start_time = clock(); 
-	//½Ãµå
+	//ì‹œë“œ
 	//srand((unsigned int)time(NULL));
-	//Ä¿¼­ ¼û±â±â
+	//ì»¤ì„œ ìˆ¨ê¸°ê¸°
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.dwSize = 1;
 	cursorInfo.bVisible = FALSE;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
-	//ÁöÁ¤µÈ ÄÜ¼Ö ½ºÅ©¸° ¹öÆÛ¿¡ ´ëÇÏ¿© Ä¿¼­ÀÇ ÇüÅÂ (µÎ²² or ³ëÃâ¿©ºÎ) ¸¦ ¼³Á¤ÇÏ´Â ¿ªÇÒÀ» ÇÔ 
-	//¸Å°³º¯¼ö·Î ÄÜ¼Ö ½ºÅ©¸° ¹öÆÛ¿¡ ´ëÇÑ ÇÚµé°ú CONSOLE_CURSUR_INFO ±¸Á¶Ã¼¸¦ ³Ñ°ÜÁÜ
+	//ì§€ì •ëœ ì½˜ì†” ìŠ¤í¬ë¦° ë²„í¼ì— ëŒ€í•˜ì—¬ ì»¤ì„œì˜ í˜•íƒœ (ë‘ê»˜ or ë…¸ì¶œì—¬ë¶€) ë¥¼ ì„¤ì •í•˜ëŠ” ì—­í• ì„ í•¨ 
+	//ë§¤ê°œë³€ìˆ˜ë¡œ ì½˜ì†” ìŠ¤í¬ë¦° ë²„í¼ì— ëŒ€í•œ í•¸ë“¤ê³¼ CONSOLE_CURSUR_INFO êµ¬ì¡°ì²´ë¥¼ ë„˜ê²¨ì¤Œ
 }
-//°ÔÀÓµéÀÇ ÃÊ±â¼³Á¤µéÀ» ÁöÁ¤ÇØÁØ´Ù.
+//ê²Œì„ë“¤ì˜ ì´ˆê¸°ì„¤ì •ë“¤ì„ ì§€ì •í•´ì¤€ë‹¤.
 
-/********************************È­¸é*******************************************/
+/********************************í™”ë©´*******************************************/
 
 void title(void) {
 
 	//PlaySound(TEXT(SOUND_FILE_NAME), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-	textcolor(LIGHTBLUE, BLACK); //È­¸éÀº ºí·¢, ±ÛÀÚ´Â ºí·ç·Î Ãâ·Â
+	textcolor(LIGHTBLUE, BLACK); //í™”ë©´ì€ ë¸”ë™, ê¸€ìëŠ” ë¸”ë£¨ë¡œ ì¶œë ¥
 	/*
 	cout << "\n\n\n\n";
 	cout << "\t ______       ___          ___   _  _______  __   __  _______  _______  _______  ______    ______  \t" << endl;
@@ -76,79 +76,79 @@ void title(void) {
 	cout << "\t |       ||       | _____  |    _  ||   |___   |   |  | |_|   ||       ||   _   ||   |  | ||       |\t" << endl;
 	cout << "\t |______| |_______||_____| |___| |_||_______|  |___|  |_______||_______||__| |__||___|  |_||______| \t" << endl;
 	cout << "\n\n\n\n";
-	*/textcolor(YELLOW, BLACK); //È­¸éÀº ºí·¢, ±ÛÀÚ´Â ¿»·Î¿ì·Î Ãâ·Â
-	do { //Å° ÀÔ·Â¹ŞÀ¸¸é ´ÙÀ½ È­¸éÀ¸·Î ³Ñ¾î°¨.
+	*/textcolor(YELLOW, BLACK); //í™”ë©´ì€ ë¸”ë™, ê¸€ìëŠ” ì˜ë¡œìš°ë¡œ ì¶œë ¥
+	do { //í‚¤ ì…ë ¥ë°›ìœ¼ë©´ ë‹¤ìŒ í™”ë©´ìœ¼ë¡œ ë„˜ì–´ê°.
 		cout << "\r\t \t \t \t \t \t Press Any Key...";
 		Sleep(ONE_SECOND);
 		puts("");
-		_getch(); //ÀÔ·ÂÀº ¹ŞÁö¸¸ ¹«¾ùÀ» ÀÔ·ÂÇß´ÂÁö º¸¿©ÁÖÁö ¾Ê´Â ÇÔ¼ö
+		_getch(); //ì…ë ¥ì€ ë°›ì§€ë§Œ ë¬´ì—‡ì„ ì…ë ¥í–ˆëŠ”ì§€ ë³´ì—¬ì£¼ì§€ ì•ŠëŠ” í•¨ìˆ˜
 		Sleep(ONE_SECOND);
-	} while (_kbhit()); //Å°º¸µå°¡ ÀÔ·ÂµÈ »óÅÂÀÎÁö È®ÀÎÇÏ´Â ÇÔ¼ö
+	} while (_kbhit()); //í‚¤ë³´ë“œê°€ ì…ë ¥ëœ ìƒíƒœì¸ì§€ í™•ì¸í•˜ëŠ” í•¨ìˆ˜
 
 	system("cls");
 }
-//Å¸ÀÌÆ²È­¸é
+//íƒ€ì´í‹€í™”ë©´
 
 void display(void) {
 
-	int len; // Ãâ·ÂÇÏ´Â ´Ü¾î ±æÀÌ
+	int len; // ì¶œë ¥í•˜ëŠ” ë‹¨ì–´ ê¸¸ì´
 
 	GotoXY(0, 0);
-	printf("\t exit ÀÔ·Â½Ã °ÔÀÓ¿À¹ö \t\t\t [Ã¼·Â] %.1d \n", ph); //ÇöÀç Ã¼·Â Ãâ·Â
+	printf("\t exit ì…ë ¥ì‹œ ê²Œì„ì˜¤ë²„ \t\t\t [ì²´ë ¥] %.1d \n", ph); //í˜„ì¬ ì²´ë ¥ ì¶œë ¥
 	GotoXY(1, 1);
-	printf("¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡\n");//»ó´Ü
+	printf("â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n");//ìƒë‹¨
 	GotoXY(1, 23);
-	printf("¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡\n");//ÇÏ´Ü
-	GotoXY(5, 25); //»ç¿ëÀÚ ÀÔ·ÂºÎºĞ
+	printf("â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n");//í•˜ë‹¨
+	GotoXY(5, 25); //ì‚¬ìš©ì ì…ë ¥ë¶€ë¶„
 	cout << ">>                                                                             ";
 
 	int pos = 7;
 	for (int i = 3; i <= 23; i++) {
 
-		GotoXY(rain_words[i - 3].x, i);       //¹«ÀÛÀ§ À§Ä¡·Î ´Ü¾î ÀÌµ¿ 
-		cout << rain_words[i - 3].words;      // ÇöÀç À§Ä¡¿¡ ´Ü¾î Ãâ·Â
+		GotoXY(rain_words[i - 3].x, i);       //ë¬´ì‘ìœ„ ìœ„ì¹˜ë¡œ ë‹¨ì–´ ì´ë™ 
+		cout << rain_words[i - 3].words;      // í˜„ì¬ ìœ„ì¹˜ì— ë‹¨ì–´ ì¶œë ¥
 
-		len = strlen(rain_words[i - 3].words); //Ãâ·ÂÇÑ ´Ü¾î ±æÀÌ¸¦ lenº¯¼ö¿¡ ÀúÀå
+		len = strlen(rain_words[i - 3].words); //ì¶œë ¥í•œ ë‹¨ì–´ ê¸¸ì´ë¥¼ lenë³€ìˆ˜ì— ì €ì¥
 
 		if (i > 3) {
-			GotoXY(rain_words[i - 3].x, i - 1); //ÀÌÀü À§Ä¡ÀÇ ´Ü¾î·Î ÀÌµ¿
+			GotoXY(rain_words[i - 3].x, i - 1); //ì´ì „ ìœ„ì¹˜ì˜ ë‹¨ì–´ë¡œ ì´ë™
 
-			for (int i = 0; i < len; i++) cout << " "; // ÀÌÀü À§Ä¡ÀÇ ´Ü¾î Ãâ·Â Áö¿ò
+			for (int i = 0; i < len; i++) cout << " "; // ì´ì „ ìœ„ì¹˜ì˜ ë‹¨ì–´ ì¶œë ¥ ì§€ì›€
 		}
-		GotoXY(pos, 25); //»ç¿ëÀÚ ÀÔ·ÂºÎºĞ
+		GotoXY(pos, 25); //ì‚¬ìš©ì ì…ë ¥ë¶€ë¶„
 		printf("%s", input_word);
 
 		Sleep(60000 / (130 * 16));
-		// ´Ü¾î°¡ ¶³¾îÁö´Â ¼Óµµ Á¶Àı
+		// ë‹¨ì–´ê°€ ë–¨ì–´ì§€ëŠ” ì†ë„ ì¡°ì ˆ
 	}
 
-	if ((strlen(rain_words[20].words) > 1) && (strcmp(rain_words[20].words, " "))) // 20¹øÂ° ÁÙ¿¡ ´Ü¾î°¡ ÀÖ´Â °æ¿ì
-		ph -= 1; // ´Ü¾î ÀÔ·Â ¸øÇÒ¶§¸¶´Ù Ã¼·ÂÀÌ 1¾¿ °¨¼ÒµÊ
+	if ((strlen(rain_words[20].words) > 1) && (strcmp(rain_words[20].words, " "))) // 20ë²ˆì§¸ ì¤„ì— ë‹¨ì–´ê°€ ìˆëŠ” ê²½ìš°
+		ph -= 1; // ë‹¨ì–´ ì…ë ¥ ëª»í• ë•Œë§ˆë‹¤ ì²´ë ¥ì´ 1ì”© ê°ì†Œë¨
 }
 
 bool game_over(void) {
-	textcolor(RED, WHITE); //È­¸éÀº È­ÀÌÆ®, ±ÛÀÚ´Â ·¹µå·Î Ãâ·Â
+	textcolor(RED, WHITE); //í™”ë©´ì€ í™”ì´íŠ¸, ê¸€ìëŠ” ë ˆë“œë¡œ ì¶œë ¥
 	system("cls");
 	music.note_clear();
 	cout << "\n\n\n\n";
-	cout << "\t¦£¦¡¦¤¦£¦¡¦¤¦£¦¨¦¤¦£¦¡¦¤  ¦£¦¡¦¤¦¨  ¦¨¦£¦¡¦¤¦¨¦¡¦¤" << endl;
-	cout << "\t¦¢ ¦¨¦§¦¡¦©¦¢¦¢¦¢¦§¦©     ¦¢ ¦¢¦¦¦¤¦£¦¥¦§¦© ¦§¦¨¦¥" << endl;
-	cout << "\t¦¦¦¡¦¥¦ª ¦ª¦ª ¦ª¦¦¦¡¦¥    ¦¦¦¡¦¥ ¦¦¦¥ ¦¦¦¡¦¥¦ª¦¦¦¡" << endl;
+	cout << "\tâ”Œâ”€â”â”Œâ”€â”â”Œâ”¬â”â”Œâ”€â”  â”Œâ”€â”â”¬  â”¬â”Œâ”€â”â”¬â”€â”" << endl;
+	cout << "\tâ”‚ â”¬â”œâ”€â”¤â”‚â”‚â”‚â”œâ”¤     â”‚ â”‚â””â”â”Œâ”˜â”œâ”¤ â”œâ”¬â”˜" << endl;
+	cout << "\tâ””â”€â”˜â”´ â”´â”´ â”´â””â”€â”˜    â””â”€â”˜ â””â”˜ â””â”€â”˜â”´â””â”€" << endl;
 	cout << "\n\n\n";
 	cout << "\tSave Successfully to ../saveMusic/music.mp3" << endl;
 	cout << "\n\n\n\n";
 	cout << "\r\tcontinue?(Y/N) " << endl;
 
-	/*y³ª Y¸¦ ÀÔ·ÂÇÏ¸é ¸Ş´ºÈ­¸éÀ¸·Î ³Ñ¾î°¡°í nÀÌ³ª NÀ» ÀÔ·ÂÇÏ¸é Á¾·áµÊ.
-	 *±× ¿ÜÀÇ ´Ù¸¥ ÀÔ·ÂÀº ¹«½ÃÇÔ */
+	/*yë‚˜ Yë¥¼ ì…ë ¥í•˜ë©´ ë©”ë‰´í™”ë©´ìœ¼ë¡œ ë„˜ì–´ê°€ê³  nì´ë‚˜ Nì„ ì…ë ¥í•˜ë©´ ì¢…ë£Œë¨.
+	 *ê·¸ ì™¸ì˜ ë‹¤ë¥¸ ì…ë ¥ì€ ë¬´ì‹œí•¨ */
 
-	GotoXY(5, 25); //»ç¿ëÀÚ¿¡°Ô ÀÔ·Â¹ŞÀ» À§Ä¡·Î ÀÌµ¿
+	GotoXY(5, 25); //ì‚¬ìš©ìì—ê²Œ ì…ë ¥ë°›ì„ ìœ„ì¹˜ë¡œ ì´ë™
 	string s;
 	cout << ">> ";
 
 	while (1)
 	{
-		s = _getch(); //»ç¿ëÀÚ¿¡°Ô y³ª nÀ» ÀÔ·Â¹ŞÀ½
+		s = _getch(); //ì‚¬ìš©ìì—ê²Œ yë‚˜ nì„ ì…ë ¥ë°›ìŒ
 
 		if (s == "y" | s == "Y") {
 			return true;
@@ -161,49 +161,49 @@ bool game_over(void) {
 	}
 }
 
-//°ÔÀÓ¿À¹öÈ­¸é
+//ê²Œì„ì˜¤ë²„í™”ë©´
 
-/********************************´Ü¾î»ı¼º*******************************************/
-void random_word(void) { //´Ü¾î »ı¼º ÇÔ¼ö
+/********************************ë‹¨ì–´ìƒì„±*******************************************/
+void random_word(void) { //ë‹¨ì–´ ìƒì„± í•¨ìˆ˜
 
 	for (int i = 20; i > 0; i--) {
-		strcpy(rain_words[i].words, rain_words[i - 1].words); // ±âÁ¸ ´Ü¾î´Â ÇÑ ÁÙ¾¿ ¹Ğ°í
+		strcpy(rain_words[i].words, rain_words[i - 1].words); // ê¸°ì¡´ ë‹¨ì–´ëŠ” í•œ ì¤„ì”© ë°€ê³ 
 		rain_words[i].x = rain_words[i - 1].x;
 		rain_words[i - 1].x = 0;
-		strcpy(rain_words[i - 1].words, " "); // µŞ ÁÙÀº °ø¹éÃ³¸®
+		strcpy(rain_words[i - 1].words, " "); // ë’· ì¤„ì€ ê³µë°±ì²˜ë¦¬
 	}
-	rain_words[0].x = rand() % 12 * 6; //³­¼ö »ı¼º (5ÀÇ ¹è¼ö ³­¼ö »ı¼º)
+	rain_words[0].x = rand() % 12 * 6; //ë‚œìˆ˜ ìƒì„± (5ì˜ ë°°ìˆ˜ ë‚œìˆ˜ ìƒì„±)
 	srand(time(NULL));
-	if (rain_words[0].x == rain_words[1].x) rain_words[0].x = rand() % 12 * 6; //´Ü¾îÀÇ xÁÂÇ¥°¡ °°À¸¸é ³­¼ö ´Ù½Ã »ı¼º
-	strcpy(rain_words[0].words, AllWord[rand() % 10]); // »õ·Î¿î ´Ü¾î¸¦ ¹«ÀÛÀ§·Î ¹èÄ¡
+	if (rain_words[0].x == rain_words[1].x) rain_words[0].x = rand() % 12 * 6; //ë‹¨ì–´ì˜ xì¢Œí‘œê°€ ê°™ìœ¼ë©´ ë‚œìˆ˜ ë‹¤ì‹œ ìƒì„±
+	strcpy(rain_words[0].words, AllWord[rand() % 10]); // ìƒˆë¡œìš´ ë‹¨ì–´ë¥¼ ë¬´ì‘ìœ„ë¡œ ë°°ì¹˜
 }
 
-void play_game() { //°ÔÀÓ ÁøÇà ÇÔ¼ö
+void play_game() { //ê²Œì„ ì§„í–‰ í•¨ìˆ˜
 
-	textcolor(LIGHTBLUE, BLACK); //È­¸éÀº È­ÀÌÆ®, ±ÛÀÚ´Â ºí·ç·Î Ãâ·Â
-	ph = 3; //Ã¼·Â 3À¸·Î ÃÊ±âÈ­
-	system("cls"); //ÄÜ¼ÖÃ¢ ÃÊ±âÈ­
-	InitData(); //´Ü¾î ¹è¿­ ÃÊ±âÈ­
+	textcolor(LIGHTBLUE, BLACK); //í™”ë©´ì€ í™”ì´íŠ¸, ê¸€ìëŠ” ë¸”ë£¨ë¡œ ì¶œë ¥
+	ph = 3; //ì²´ë ¥ 3ìœ¼ë¡œ ì´ˆê¸°í™”
+	system("cls"); //ì½˜ì†”ì°½ ì´ˆê¸°í™”
+	InitData(); //ë‹¨ì–´ ë°°ì—´ ì´ˆê¸°í™”
 	g_start_time = clock();
-	start_thread(); //½º·¹µå ½ÃÀÛ
+	start_thread(); //ìŠ¤ë ˆë“œ ì‹œì‘
 	playing = true;
 	while (1) {
-		display(); //È­¸é Ãâ·Â
-		//´Ü¾î Ãâ·Â
-		random_word();//´Ü¾î »ı¼ºÇØÁÖ°í
-		//Sleep(200); //ÁöÁ¤ÇÑ ½Ã°£¸¸Å­ ´Ü¾î »ı¼º Áö¿¬
-		g_end_time = clock(); //ÇØ´ç ´Ü¾î°¡ »ı¼ºµÈ ½Ã°£ ±â·Ï
+		display(); //í™”ë©´ ì¶œë ¥
+		//ë‹¨ì–´ ì¶œë ¥
+		random_word();//ë‹¨ì–´ ìƒì„±í•´ì£¼ê³ 
+		//Sleep(200); //ì§€ì •í•œ ì‹œê°„ë§Œí¼ ë‹¨ì–´ ìƒì„± ì§€ì—°
+		g_end_time = clock(); //í•´ë‹¹ ë‹¨ì–´ê°€ ìƒì„±ëœ ì‹œê°„ ê¸°ë¡
 
-		if (!playing)	break; //exit ÀÔ·Â½Ã Á¾·á
-		if (ph <= 0) break; // Ã¼·ÂÀÌ 0 ÀÌ¸é °ÔÀÓ Á¾·áµÊ
+		if (!playing)	break; //exit ì…ë ¥ì‹œ ì¢…ë£Œ
+		if (ph <= 0) break; // ì²´ë ¥ì´ 0 ì´ë©´ ê²Œì„ ì¢…ë£Œë¨
 	}
 
-	end_thread(); //½º·¹µå ÁßÁö
+	end_thread(); //ìŠ¤ë ˆë“œ ì¤‘ì§€
 }
 
-void* t_function(void* data) // ½º·¹µå Ã³¸®ÇÒ ´Ü¾î ÀÔ·Â ÇÔ¼ö
+void* t_function(void* data) // ìŠ¤ë ˆë“œ ì²˜ë¦¬í•  ë‹¨ì–´ ì…ë ¥ í•¨ìˆ˜
 {
-	while (!thr_exit) // ½º·¹µå°¡ ÁßÁöµÉ ¶§±îÁö ÀÔ·ÂÀ» °è¼Ó ¹ŞÀ½
+	while (!thr_exit) // ìŠ¤ë ˆë“œê°€ ì¤‘ì§€ë  ë•Œê¹Œì§€ ì…ë ¥ì„ ê³„ì† ë°›ìŒ
 	{
 		char c = 0;
 		if (_kbhit())
@@ -213,7 +213,7 @@ void* t_function(void* data) // ½º·¹µå Ã³¸®ÇÒ ´Ü¾î ÀÔ·Â ÇÔ¼ö
 			if (c == 13)
 			{
 				system("cls");
-			} //´Ü¾î ÀÔ·ÂÇÏ°í ¿£ÅÍÄ¡¸é È­¸é ÃÊ±âÈ­½ÃÄÑÁÜ
+			} //ë‹¨ì–´ ì…ë ¥í•˜ê³  ì—”í„°ì¹˜ë©´ í™”ë©´ ì´ˆê¸°í™”ì‹œì¼œì¤Œ
 			else if (c == 8)
 			{
 				input_word[input_word_len - 1] = '\0';
@@ -225,39 +225,45 @@ void* t_function(void* data) // ½º·¹µå Ã³¸®ÇÒ ´Ü¾î ÀÔ·Â ÇÔ¼ö
 		}
 
 		if (c == 13) {
+			bool check = false;
 			for (int i = 19; i >= 0; i--)
 			{
-				if (strcmp(rain_words[i].words, input_word) == 0) {// ÀÔ·ÂÇÑ ´Ü¾î¿Í ÀÔ·Â°ªÀÌ °°Àº °æ¿ì 
-					strcpy(rain_words[i].words, ""); // ÇØ´ç ´Ü¾î Á¦°Å
-					word_len = strlen(input_word); //À½¾Ç ÇÁ·Î¼¼½º ºÎºĞ ÇÔ¼ö¿¡ ³Ñ±æ ´Ü¾î ±æÀÌ¸¦ ±¸ÇÔ
+				if (strcmp(rain_words[i].words, input_word) == 0) {// ì…ë ¥í•œ ë‹¨ì–´ì™€ ì…ë ¥ê°’ì´ ê°™ì€ ê²½ìš° 
+					strcpy(rain_words[i].words, ""); // í•´ë‹¹ ë‹¨ì–´ ì œê±°
+					word_len = strlen(input_word); //ìŒì•… í”„ë¡œì„¸ìŠ¤ ë¶€ë¶„ í•¨ìˆ˜ì— ë„˜ê¸¸ ë‹¨ì–´ ê¸¸ì´ë¥¼ êµ¬í•¨
 					music.note_adder(word_len);
 					break;
 				}
 			}
-			if (strcmp(input_word, EXIT) == 0)
+			if (strcmp(input_word, EXIT) == 0) {
 				playing = false;
+				check = true;
+			}
 			input_word[0] = '\0';
+			if (!check) {
+				music.wrong_input();
+			}
 		}
 
 	}
 	return 0;
 }
 
-void start_thread() // ½º·¹µå ½ÃÀÛ ÇÔ¼ö
+void start_thread() // ìŠ¤ë ˆë“œ ì‹œì‘ í•¨ìˆ˜
 {
 	thr_exit = 0;
-	thr_id1 = pthread_create(&p_thread1, NULL, t_function, NULL); // ½º·¹µå »ı¼º
+	thr_id1 = pthread_create(&p_thread1, NULL, t_function, NULL); // ìŠ¤ë ˆë“œ ìƒì„±
 }
 
-void end_thread() // ½º·¹µå ÁßÁö ÇÔ¼ö
+void end_thread() // ìŠ¤ë ˆë“œ ì¤‘ì§€ í•¨ìˆ˜
 {
 	thr_exit = 1;
-	pthread_cancel(p_thread1); // ½º·¹µå Á¾·á
+	pthread_cancel(p_thread1); // ìŠ¤ë ˆë“œ ì¢…ë£Œ
 }
 
-void help_function() // µµ¿ò¸» ÇÔ¼ö
+void help_function() // ë„ì›€ë§ í•¨ìˆ˜
 {
-	textcolor(CYAN, WHITE); //È­¸é°ú ±ÛÀÚ »ö»ó º¯°æ
+	textcolor(CYAN, WHITE); //í™”ë©´ê³¼ ê¸€ì ìƒ‰ìƒ ë³€ê²½
 	system("cls");
 	cout << "\n\n\n\n";
 	cout << "\t\t\t\t ___   ___  _________   _          __________ " << endl;
@@ -265,23 +271,23 @@ void help_function() // µµ¿ò¸» ÇÔ¼ö
 	cout << "\t\t\t\t |   -   |  | ______   | |_______  |     ____|" << endl;
 	cout << "\t\t\t\t |__| |__|  |_______|  |_|______|  |____|" << endl;
 	cout << "\n\n\n";
-	textcolor(BROWN, WHITE); //È­¸é°ú ±ÛÀÚ »ö»ó º¯°æ 
-	cout << "\t\t\t\t ÇÏ´Ã¿¡¼­ ºñÃ³·³ ³»·Á¿À´Â ´Ü¾î¸¦ Å°º¸µå·Î ÀÔ·ÂÇØÁÖ¼¼¿ä!" << endl << endl;
-	cout << "\t\t\t\t ´Ü¾î¸¦ ÀÔ·ÂÇÏ¸é ´Ü¾îÀÇ ±æÀÌ¸¸Å­ À½ÀÌ Àç»ıµË´Ï´Ù!" << endl << endl;
-	cout << "\t\t\t\t Ã¼·ÂÀÌ 0ÀÌ µÇ¸é °ÔÀÓÀÌ Á¾·áµË´Ï´Ù! " << endl << endl;
-	cout << "\t\t\t\t °ÔÀÓÀÌ Á¾·áµÇ¸é ³ª¸¸ÀÇ À½¾ÇÀÌ ¿Ï¼ºµË´Ï´Ù! " << endl << endl << endl;
-	textcolor(MAGENTA, WHITE); //È­¸é°ú ±ÛÀÚ »ö»ó º¯°æ
-	cout << "\t\t\t\t¸Ş´º·Î µ¹¾Æ°¡°í ½Í´Ù¸é ¾Æ¹« Å°³ª ´­·¯ÁÖ¼¼¿ä!" << endl << endl;
-	_getch(); //¾Æ¹«Å°³ª ÀÔ·Â¹ŞÀ½
+	textcolor(BROWN, WHITE); //í™”ë©´ê³¼ ê¸€ì ìƒ‰ìƒ ë³€ê²½ 
+	cout << "\t\t\t\t í•˜ëŠ˜ì—ì„œ ë¹„ì²˜ëŸ¼ ë‚´ë ¤ì˜¤ëŠ” ë‹¨ì–´ë¥¼ í‚¤ë³´ë“œë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”!" << endl << endl;
+	cout << "\t\t\t\t ë‹¨ì–´ë¥¼ ì…ë ¥í•˜ë©´ ë‹¨ì–´ì˜ ê¸¸ì´ë§Œí¼ ìŒì´ ì¬ìƒë©ë‹ˆë‹¤!" << endl << endl;
+	cout << "\t\t\t\t ì²´ë ¥ì´ 0ì´ ë˜ë©´ ê²Œì„ì´ ì¢…ë£Œë©ë‹ˆë‹¤! " << endl << endl;
+	cout << "\t\t\t\t ê²Œì„ì´ ì¢…ë£Œë˜ë©´ ë‚˜ë§Œì˜ ìŒì•…ì´ ì™„ì„±ë©ë‹ˆë‹¤! " << endl << endl << endl;
+	textcolor(MAGENTA, WHITE); //í™”ë©´ê³¼ ê¸€ì ìƒ‰ìƒ ë³€ê²½
+	cout << "\t\t\t\të©”ë‰´ë¡œ ëŒì•„ê°€ê³  ì‹¶ë‹¤ë©´ ì•„ë¬´ í‚¤ë‚˜ ëˆŒëŸ¬ì£¼ì„¸ìš”!" << endl << endl;
+	_getch(); //ì•„ë¬´í‚¤ë‚˜ ì…ë ¥ë°›ìŒ
 	fflush(stdin);
 }
 
-bool menu_function() { //¸ŞÀÎ¸Ş´º ÇÔ¼ö
-	textcolor(BROWN, WHITE); //È­¸é°ú ±ÛÀÚ »ö»ó º¯°æ
+bool menu_function() { //ë©”ì¸ë©”ë‰´ í•¨ìˆ˜
+	textcolor(BROWN, WHITE); //í™”ë©´ê³¼ ê¸€ì ìƒ‰ìƒ ë³€ê²½
 
-	int choice = 0; //»ç¿ëÀÚ°¡ ¸Ş´º¿¡¼­ ¼±ÅÃÇÑ °ªÀ» ÀúÀåÇÏ´Â º¯¼ö
+	int choice = 0; //ì‚¬ìš©ìê°€ ë©”ë‰´ì—ì„œ ì„ íƒí•œ ê°’ì„ ì €ì¥í•˜ëŠ” ë³€ìˆ˜
 
-	system("cls"); // ÄÜ¼ÖÃ¢ ÃÊ±âÈ­
+	system("cls"); // ì½˜ì†”ì°½ ì´ˆê¸°í™”
 	cout << "\n\n\n\n";
 	cout << "\t ______       ___          ___   _  _______  __   __  _______  _______  _______  ______    ______  \t" << endl;
 	cout << "\t |      |     |   |        |   | | ||       ||  | |  ||  _    ||       ||   _   ||    _ |  |      | \t" << endl;
@@ -293,31 +299,31 @@ bool menu_function() { //¸ŞÀÎ¸Ş´º ÇÔ¼ö
 	cout << "\t |______| |_______||_____| |___| |_||_______|  |___|  |_______||_______||__| |__||___|  |_||______| \t" << endl;
 	cout << "\n\n" << endl;
 	//MENU
-	textcolor(BLUE, WHITE); //È­¸é°ú ±ÛÀÚ »ö»ó º¯°æ
+	textcolor(BLUE, WHITE); //í™”ë©´ê³¼ ê¸€ì ìƒ‰ìƒ ë³€ê²½
 	cout << "\t\t\t\t\t\t 1. GAME START " << endl << endl << endl;
-	textcolor(GREEN, WHITE); //È­¸é°ú ±ÛÀÚ »ö»ó º¯°æ
+	textcolor(GREEN, WHITE); //í™”ë©´ê³¼ ê¸€ì ìƒ‰ìƒ ë³€ê²½
 	cout << "\t\t\t\t\t\t 2. HELP " << endl << endl << endl;
-	textcolor(RED, WHITE); //È­¸é°ú ±ÛÀÚ »ö»ó º¯°æ
+	textcolor(RED, WHITE); //í™”ë©´ê³¼ ê¸€ì ìƒ‰ìƒ ë³€ê²½
 	cout << "\t\t\t\t\t\t 3. GAME END " << endl << endl << endl << endl << endl;
-	textcolor(BROWN, WHITE); //È­¸é°ú ±ÛÀÚ »ö»ó º¯°æ
+	textcolor(BROWN, WHITE); //í™”ë©´ê³¼ ê¸€ì ìƒ‰ìƒ ë³€ê²½
 	cout << "\t\t\t\t\t\t MENU NUMBER >> ";
 	fflush(stdin);
-	// ¸Ş´º ¼±ÅÃÇÒ ¹øÈ£ 1,2,3 Áß ÇÏ³ª¸¦ ÀÔ·Â¹ŞÀ½ (³ª¸ÓÁö ÀÔ·ÂÀº ¹«½ÃÇÔ)
+	// ë©”ë‰´ ì„ íƒí•  ë²ˆí˜¸ 1,2,3 ì¤‘ í•˜ë‚˜ë¥¼ ì…ë ¥ë°›ìŒ (ë‚˜ë¨¸ì§€ ì…ë ¥ì€ ë¬´ì‹œí•¨)
 	while (1)
 	{
 		choice = _getch();
 
-		if (choice == 49) { //»ç¿ëÀÚ°¡ 1À» ÀÔ·ÂÇÑ °æ¿ì
+		if (choice == 49) { //ì‚¬ìš©ìê°€ 1ì„ ì…ë ¥í•œ ê²½ìš°
 			cout << "1";
 			system("cls");
 			break;
 		}
-		else if (choice == 50) { //»ç¿ëÀÚ°¡ 2¸¦ ÀÔ·ÂÇÑ °æ¿ì
+		else if (choice == 50) { //ì‚¬ìš©ìê°€ 2ë¥¼ ì…ë ¥í•œ ê²½ìš°
 			cout << "2";
 			system("cls");
 			break;
 		}
-		else if (choice == 51) { //»ç¿ëÀÚ°¡ 3À» ÀÔ·ÂÇÑ °æ¿ì
+		else if (choice == 51) { //ì‚¬ìš©ìê°€ 3ì„ ì…ë ¥í•œ ê²½ìš°
 			cout << "3";
 			system("cls");
 			break;
@@ -326,30 +332,30 @@ bool menu_function() { //¸ŞÀÎ¸Ş´º ÇÔ¼ö
 
 	switch (choice)
 	{
-	case 49: //»ç¿ëÀÚ°¡ 1À» ÀÔ·ÂÇÑ °æ¿ì
-		play_game(); // °ÔÀÓ ½ÃÀÛ ÇÔ¼ö È£Ãâ
-		if (!game_over()) return false;   //¸¸¾à »ç¿ëÀÚ°¡ continue?(Y/N) Áú¹®¿¡¼­ nÀ» ÀÔ·ÂÇÑ °æ¿ì falseÀ» ¹İÈ¯ÇÏ¿© °ÔÀÓ Á¾·á½ÃÅ´
+	case 49: //ì‚¬ìš©ìê°€ 1ì„ ì…ë ¥í•œ ê²½ìš°
+		play_game(); // ê²Œì„ ì‹œì‘ í•¨ìˆ˜ í˜¸ì¶œ
+		if (!game_over()) return false;   //ë§Œì•½ ì‚¬ìš©ìê°€ continue?(Y/N) ì§ˆë¬¸ì—ì„œ nì„ ì…ë ¥í•œ ê²½ìš° falseì„ ë°˜í™˜í•˜ì—¬ ê²Œì„ ì¢…ë£Œì‹œí‚´
 		break;
-	case 50: //»ç¿ëÀÚ°¡ 2¸¦ ÀÔ·ÂÇÑ °æ¿ì
-		help_function(); // µµ¿ò¸» Ãâ·Â ÇÔ¼ö È£Ãâ
+	case 50: //ì‚¬ìš©ìê°€ 2ë¥¼ ì…ë ¥í•œ ê²½ìš°
+		help_function(); // ë„ì›€ë§ ì¶œë ¥ í•¨ìˆ˜ í˜¸ì¶œ
 		break;
-	case 51: //»ç¿ëÀÚ°¡ 3À» ÀÔ·ÂÇÑ °æ¿ì
-		system("cls"); // ÄÜ¼ÖÃ¢ ÃÊ±âÈ­
-		return false; // 1À» ¹İÈ¯ÇÏ°í °ÔÀÓ Á¾·á
+	case 51: //ì‚¬ìš©ìê°€ 3ì„ ì…ë ¥í•œ ê²½ìš°
+		system("cls"); // ì½˜ì†”ì°½ ì´ˆê¸°í™”
+		return false; // 1ì„ ë°˜í™˜í•˜ê³  ê²Œì„ ì¢…ë£Œ
 		break;
-	default: // ±×¿Ü ÀÔ·Â ¹«½Ã
+	default: // ê·¸ì™¸ ì…ë ¥ ë¬´ì‹œ
 		break;
 	}
 	return true;
 }
 
-void GotoXY(int x, int y)		// Ä¿¼­ À§Ä¡ ÀÌµ¿ÇÏ´Â ÇÔ¼ö
+void GotoXY(int x, int y)		// ì»¤ì„œ ìœ„ì¹˜ ì´ë™í•˜ëŠ” í•¨ìˆ˜
 {
 	COORD Pos = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 }
 
-void textcolor(int foreground, int background)  //±ÛÀÚ »ö»ó Ãâ·Â ÇÔ¼ö
+void textcolor(int foreground, int background)  //ê¸€ì ìƒ‰ìƒ ì¶œë ¥ í•¨ìˆ˜
 {
 	int color = foreground + background * 16;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
