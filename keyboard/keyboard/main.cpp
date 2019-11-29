@@ -5,15 +5,15 @@ extern Music music;
 
 int main(void) {
 
-	game_init();//���� �ʱ⼳��
+	game_init();//°ÔÀÓ ÃÊ±â¼³Á¤
 
-	game_status status = game_status::Init; // 게임 ?�태 ?�시
-	string filename = "music";	// filename ?�??
-	thread thread_recording(Record, &status, &filename); // ?�음???�레??
+	game_status status = game_status::Init; // ê²Œìž„ ?íƒœ ?œì‹œ
+	string filename = "music";	// filename ?€??
+	thread thread_recording(Record, &status, &filename); // ?¹ìŒ???°ë ˆ??
 	
 	srand((unsigned int)time(0) * (unsigned int)GetCurrentThreadId());
 
-	game_init();//게임 초기?�정
+	game_init();//ê²Œìž„ ì´ˆê¸°?¤ì •
 	
         // music thread
 	thread music_thread(&Music::music_start, &music);
@@ -28,11 +28,13 @@ int main(void) {
 			break;
 
 		status = game_status::GameOver;
-	} //���ӿ��� ���Ҷ�����
-	
+	} //°ÔÀÓ¿À¹ö ´çÇÒ¶§±îÁö
+	music,music_stop();
+	music_thread.join();
+	~music();
 	status = game_status::End;
 
-	thread_recording.join(); // ?�레??종료까�? ?��?
+	thread_recording.join(); // ?°ë ˆ??ì¢…ë£Œê¹Œì? ?€ê¸?
 
 
 	return 0;
