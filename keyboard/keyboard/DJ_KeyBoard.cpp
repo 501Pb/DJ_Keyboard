@@ -216,7 +216,8 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 			} //단어 입력하고 엔터치면 화면 초기화시켜줌
 			else if (c == 8)
 			{
-				input_word[input_word_len - 1] = '\0';
+				if (input_word_len > 0)
+					input_word[input_word_len - 1] = '\0';
 			}
 			else {
 				input_word[input_word_len] = c;
