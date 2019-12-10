@@ -9,7 +9,7 @@
 1. ***디제이키보드.exe*** 파일을 실행합니다.  
 
 !사진을 누르면 시연영상으로 넘어갑니다!
-[![Video Label](./image/d.png)](https://youtu.be/uLR1RNqJ1Mw?t=0s)
+[![Video Label](https://user-images.githubusercontent.com/40608930/70541181-e5f9d580-1ba9-11ea-9259-5236356e19a1.png)](https://youtu.be/uLR1RNqJ1Mw?t=0s)
 
 ## Overview
 해당 게임은 떨어지는 단어들을 입력하여 하나의 **멜로디를 만드는** 게임입니다.  
