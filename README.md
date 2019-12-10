@@ -27,7 +27,7 @@ man
 게임이 끝나면 해당 멜로디는 **.wav**파일로 저장됩니다.
 
 ## How to setting
-[Readme!](./how_to_install/Readme.md)
+[Readme!](./how_to_setting/Readme.md)
 
 
 ## Members
