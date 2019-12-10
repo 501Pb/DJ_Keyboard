@@ -1,5 +1,4 @@
 ﻿#include "DJ.h"
-#include "word.h"
 #include "music.h"
 /********************************전역변수*****************************************/
 Music music = Music();
@@ -7,21 +6,30 @@ clock_t g_start_time;                           // 기준 시각(게임 시작)
 clock_t g_end_time;								// 게임 종료 시간
 double g_falling_speed = 2.0;                   // 단어 낙하 시각(초 단위)
 
+int score = 0;
 int ph; //체력 저장
 char input_word[1024]; // 사용자 입력 값 저장
 const char* EXIT = "exit"; // exit 문자열을 저장 (사용자가 exit를 입력했을 때 게임이 끝남)
 int word_len; //사용자가 입력한 단어 중 정확하게 입력한 단어의 길이 저장할 변수
 bool playing;
-const char* AllWord[10] //산성비 게임에서 출력될 단어
+const char* AllWord[15] //산성비 게임에서 출력될 단어
 = {
-	"DJ",
 	"tiger",
 	"key",
-	"rabbit",
+	"data",
 	"flower",
 	"box",
 	"ball",
-	"board","","" };
+	"python",
+	"lg",
+	"watch",
+	"gram",
+	"board",
+	"",
+	"",
+	"",
+	""
+};
 
 
 typedef struct { //단어 구조체
@@ -89,12 +97,12 @@ void title(void) {
 }
 //타이틀화면
 
-void display(void) {
+void display() {
 
 	int len; // 출력하는 단어 길이
 
 	GotoXY(0, 0);
-	printf("\t exit 입력시 게임오버 \t\t\t [체력] %.1d \n", ph); //현재 체력 출력
+	printf(" \t \t [체력] %.1d \t [점수] %d \t [bpm] %.1lf \n", ph, score, music.get_bpm() ); //현재 체력 출력
 	GotoXY(1, 1);
 	printf("────────────────────────────────────────────────────────────────────────────\n");//상단
 	GotoXY(1, 23);
@@ -118,25 +126,30 @@ void display(void) {
 		GotoXY(pos, 25); //사용자 입력부분
 		printf("%s", input_word);
 
-		Sleep(60000 / (130 * 16));
+		Sleep(60000 / (music.get_bpm() * 16));
 		// 단어가 떨어지는 속도 조절
 	}
 
-	if ((strlen(rain_words[20].words) > 1) && (strcmp(rain_words[20].words, " "))) // 20번째 줄에 단어가 있는 경우
+	if ((strlen(rain_words[20].words) > 1) && (strcmp(rain_words[20].words, " "))) { // 20번째 줄에 단어가 있는 경우
 		ph -= 1; // 단어 입력 못할때마다 체력이 1씩 감소됨
+		music.wrong_input();
+		score -= 50;
+		InitData();
+	}
 }
 
 bool game_over(void) {
 	textcolor(RED, WHITE); //화면은 화이트, 글자는 레드로 출력
 	system("cls");
 	music.note_clear();
+	cout<<"[점수] "<<score<<endl;
 	cout << "\n\n\n\n";
 	cout << "\t┌─┐┌─┐┌┬┐┌─┐  ┌─┐┬  ┬┌─┐┬─┐\n";
 	cout << "\t│ ┬├─┤│││├┤     │ │└┐┌┘├┤ ├┬┘\n";
 	cout << "\t└─┘┴ ┴┴ ┴└─┘    └─┘ └┘ └─┘┴└─\n";
 	cout << "\n\n\n";
 	cout << "\tSave Successfully to ../saveMusic/music.mp3" << endl;
-	cout << "\n\n\n\n";
+	cout << "\n\n\n\n"<<endl;
 	cout << "\r\tcontinue?(Y/N) " << endl;
 
 	/*y나 Y를 입력하면 메뉴화면으로 넘어가고 n이나 N을 입력하면 종료됨.
@@ -175,11 +188,10 @@ void random_word(void) { //단어 생성 함수
 	rain_words[0].x = rand() % 12 * 6; //난수 생성 (5의 배수 난수 생성)
 	srand(time(NULL));
 	if (rain_words[0].x == rain_words[1].x) rain_words[0].x = rand() % 12 * 6; //단어의 x좌표가 같으면 난수 다시 생성
-	strcpy(rain_words[0].words, AllWord[rand() % 10]); // 새로운 단어를 무작위로 배치
+	strcpy(rain_words[0].words, AllWord[rand() % 15]); // 새로운 단어를 무작위로 배치
 }
 
 void play_game() { //게임 진행 함수
-
 	textcolor(LIGHTBLUE, BLACK); //화면은 화이트, 글자는 블루로 출력
 	ph = 3; //체력 3으로 초기화
 	system("cls"); //콘솔창 초기화
@@ -233,6 +245,7 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 					strcpy(rain_words[i].words, ""); // 해당 단어 제거
 					word_len = strlen(input_word); //음악 프로세스 부분 함수에 넘길 단어 길이를 구함
 					music.note_adder(word_len);
+					score += word_len;
 					check = true;
 					break;
 				}
@@ -243,7 +256,10 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 			}
 			input_word[0] = '\0';
 			if (!check) {
+				InitData();
 				music.wrong_input();
+				score -= 50;
+				--ph;
 			}
 		}
 
@@ -317,6 +333,7 @@ bool menu_function() { //메인메뉴 함수
 
 		if (choice == 49) { //사용자가 1을 입력한 경우
 			cout << "1";
+			music.bpm_changer(100);
 			system("cls");
 			break;
 		}

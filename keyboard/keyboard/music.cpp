@@ -11,7 +11,7 @@ using namespace irrklang;
 using namespace std;
 #pragma comment(lib, "irrKlang.lib")
 
-Music::Music(int nesting, int bpm, bool option1) {
+Music::Music(int nesting, double bpm, bool option1) {
 	music = createIrrKlangDevice();
 	this->nesting = nesting;
 	this->bpm = bpm;
@@ -40,6 +40,7 @@ void Music::music_start() {
 			}
 			// bpm calculate
 			Sleep(60000 / (2 * bpm));
+			if (get_bpm() < 300) bpm_changer(this->get_bpm() + 1);
 		}
 	}
 }
@@ -73,5 +74,6 @@ void Music::note_clear() {
 
 void Music::wrong_input() {
 	note_clear();
-	music->play2D("./music/Wrong.wav");
+	this->bpm = 100;
+	music->play2D("./music/Wrong.wav",false);
 }

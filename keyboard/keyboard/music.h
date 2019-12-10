@@ -40,17 +40,20 @@ private:
 	int nesting;
 	int bpm;
 	bool playing;
-	int beat;
+	double beat;
 	bool optionSoundErase;
 	void note_push(vector<int> & note, int sound);
 
 public:
-	Music(int nesting = 2, int bpm = 130, bool option1 = false);
+	Music(int nesting = 2, double bpm = 100, bool option1 = false);
 	void music_start();
 	void music_stop() { playing = false; }
-	void bpm_changer(int bpm) { this->bpm = bpm; }
+	void bpm_changer(double bpm) { this->bpm = bpm; }
 	void note_adder(int length);
 	void note_clear();
+	double get_bpm() {
+		return this->bpm;
+	}
 	~Music() { music->drop(); }
 	void wrong_input();
 };
