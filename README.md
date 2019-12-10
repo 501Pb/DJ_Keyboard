@@ -1,10 +1,3 @@
-```
-yo  
-DJ  
-keyboard  
-let's get it  
-man
-```
 # DJ_Keyboard
 >감성 힙합 리듬 게임 DJ_Keyboard
 
@@ -17,7 +10,7 @@ man
 2. ***디제이키보드.exe*** 파일을 실행합니다.  
 
 !사진을 누르면 시연영상으로 넘어갑니다!
-[![Video Label](./image/dj.png)](https://youtu.be/uLR1RNqJ1Mw?t=0s)
+[![Video Label](./image/d.png)](https://youtu.be/uLR1RNqJ1Mw?t=0s)
 
 
 ## Overview
