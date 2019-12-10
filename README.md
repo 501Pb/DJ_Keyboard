@@ -1,5 +1,3 @@
-# DJ_Keyboard
-감성 힙합 리듬 게임 DJ_Keyboard
 ```
 yo  
 DJ  
@@ -7,6 +5,8 @@ keyboard
 let's get it  
 man
 ```
+# DJ_Keyboard
+>감성 힙합 리듬 게임 DJ_Keyboard
 
 ## How to play
 <img src="./image/drop.png" width="10%" height="auto"> 
