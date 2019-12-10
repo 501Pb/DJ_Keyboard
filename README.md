@@ -1,10 +1,3 @@
-```
-yo  
-DJ  
-keyboard  
-let's get it  
-man
-```
 # DJ_Keyboard
 >감성 힙합 리듬 게임 DJ_Keyboard
 
