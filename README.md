@@ -22,8 +22,9 @@ man
 1. ***디제이키보드.zip*** 파일을 압축해제합니다.
 2. ***디제이키보드.exe*** 파일을 실행합니다.  
 
+!사진을 누르면 시연영상으로 넘어갑니다!
+[![Video Label](./image/dj.png)](https://youtu.be/uLR1RNqJ1Mw?t=0s)
 
-<iframe width="640" height="360" src="https://www.youtube.com/embed/6Az2cNU7gUw" frameborder="0" gesture="media" allowfullscreen=""></iframe>
 
 ## How to install
 - Visual Studio 2019 기준입니다.
