@@ -62,8 +62,8 @@ void Record(game_status* status, string * filename)
 		return ;
 	}
 	
-	if (access("../saveMusic", 0) == -1)
-		mkdir("../saveMusic");
+	if (access("./saveMusic", 0) == -1)
+		mkdir("./saveMusic");
 
 	while (*status == game_status::Init)
 		Sleep(SLEEPTIME);
@@ -80,7 +80,7 @@ void Record(game_status* status, string * filename)
 		recorder->stopRecordingAudio();
 
 		// save recording
-		writeWaveFile(("../saveMusic/" + *filename + ".wav").c_str(), recorder->getAudioFormat(), recorder->getRecordedAudioData());
+		writeWaveFile(("./saveMusic/" + *filename + ".wav").c_str(), recorder->getAudioFormat(), recorder->getRecordedAudioData());
 
 		while (*status == game_status::GameOver)
 			Sleep(SLEEPTIME);

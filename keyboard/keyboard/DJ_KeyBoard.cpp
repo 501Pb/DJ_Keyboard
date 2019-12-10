@@ -31,7 +31,6 @@ const char* AllWord[15] //산성비 게임에서 출력될 단어
 	""
 };
 
-
 typedef struct { //단어 구조체
 	int x; //단어의 x좌표
 	char words[20]; //단어 저장 공간
@@ -67,34 +66,6 @@ void game_init(void) {
 }
 //게임들의 초기설정들을 지정해준다.
 
-/********************************화면*******************************************/
-
-void title(void) {
-
-	//PlaySound(TEXT(SOUND_FILE_NAME), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-	textcolor(LIGHTBLUE, BLACK); //화면은 블랙, 글자는 블루로 출력
-	/*
-	cout << "\n\n\n\n";
-	cout << "\t ______       ___          ___   _  _______  __   __  _______  _______  _______  ______    ______  \t" << endl;
-	cout << "\t |      |     |   |        |   | | ||       ||  | |  ||  _    ||       ||   _   ||    _ |  |      | \t" << endl;
-	cout << "\t |  _    |    |   |        |   |_| ||    ___||  |_|  || |_|   ||   _   ||  |_|  ||   | ||  |  _    |\t" << endl;
-	cout << "\t |  _    |    |   |        |   |_| ||    ___||  |_|  || |_|   ||   _   ||  |_|  ||   | ||  |  _    |\t" << endl;
-	cout << "\t | | |   |    |   |        |      _||   |___ |       ||       ||  | |  ||       ||   |_||_ | | |   |\t" << endl;
-	cout << "\t | |_|   | ___|   |        |     |_ |    ___||_     _||  _   | |  |_|  ||       ||    __  || |_|   |\t" << endl;
-	cout << "\t |       ||       | _____  |    _  ||   |___   |   |  | |_|   ||       ||   _   ||   |  | ||       |\t" << endl;
-	cout << "\t |______| |_______||_____| |___| |_||_______|  |___|  |_______||_______||__| |__||___|  |_||______| \t" << endl;
-	cout << "\n\n\n\n";
-	*/textcolor(YELLOW, BLACK); //화면은 블랙, 글자는 옐로우로 출력
-	do { //키 입력받으면 다음 화면으로 넘어감.
-		cout << "\r\t \t \t \t \t \t Press Any Key...";
-		Sleep(ONE_SECOND);
-		puts("");
-		_getch(); //입력은 받지만 무엇을 입력했는지 보여주지 않는 함수
-		Sleep(ONE_SECOND);
-	} while (_kbhit()); //키보드가 입력된 상태인지 확인하는 함수
-
-	system("cls");
-}
 //타이틀화면
 
 void display() {
@@ -135,27 +106,36 @@ void display() {
 		music.wrong_input();
 		score -= 50;
 		InitData();
+		system("cls");
 	}
 }
 
 bool game_over(void) {
 	textcolor(RED, WHITE); //화면은 화이트, 글자는 레드로 출력
+
 	system("cls");
 	music.note_clear();
-	cout<<"[점수] "<<score<<endl;
 	cout << "\n\n\n\n";
-	cout << "\t┌─┐┌─┐┌┬┐┌─┐  ┌─┐┬  ┬┌─┐┬─┐\n";
-	cout << "\t│ ┬├─┤│││├┤     │ │└┐┌┘├┤ ├┬┘\n";
-	cout << "\t└─┘┴ ┴┴ ┴└─┘    └─┘ └┘ └─┘┴└─\n";
+	cout <<
+		" _______  _______  __   __  _______    _______  __   __  _______  ______" <<endl<<
+		"|       ||   _   ||  |_|  ||       |  |       ||  | |  ||       ||    _ |" << endl <<
+		"|    ___||  |_|  ||       ||    ___|  |   _   ||  |_|  ||    ___||   | ||" << endl <<
+		"|   | __ |       ||       ||   |___   |  | |  ||       ||   |___ |   |_||_" << endl <<
+		"|   ||  ||       ||       ||    ___|  |  |_|  ||       ||    ___||    __  |" << endl <<
+		"|   |_| ||   _   || ||_|| ||   |___   |       | |     | |   |___ |   |  | |" << endl <<
+		"|_______||__| |__||_|   |_||_______|  |_______|  |___|  |_______||___|  |_|" << endl;
+
 	cout << "\n\n\n";
-	cout << "\tSave Successfully to ../saveMusic/music.mp3" << endl;
-	cout << "\n\n\n\n"<<endl;
-	cout << "\r\tcontinue?(Y/N) " << endl;
+	cout << "Save Successfully to ./saveMusic/music.mp3" << endl;
+	cout << "score : " << score << endl;
+
+	cout << "\n\n"<<endl;
+	cout << "\rcontinue?(Y/N) " << endl;
 
 	/*y나 Y를 입력하면 메뉴화면으로 넘어가고 n이나 N을 입력하면 종료됨.
 	 *그 외의 다른 입력은 무시함 */
 
-	GotoXY(5, 25); //사용자에게 입력받을 위치로 이동
+	GotoXY(1, 25); //사용자에게 입력받을 위치로 이동
 	string s;
 	cout << ">> ";
 
@@ -192,8 +172,9 @@ void random_word(void) { //단어 생성 함수
 }
 
 void play_game() { //게임 진행 함수
-	textcolor(LIGHTBLUE, BLACK); //화면은 화이트, 글자는 블루로 출력
+	textcolor(BLUE, WHITE); //화면은 화이트, 글자는 블루로 출력
 	ph = 3; //체력 3으로 초기화
+	score = 0;// 점수도 0으로 초기화
 	system("cls"); //콘솔창 초기화
 	InitData(); //단어 배열 초기화
 	g_start_time = clock();
@@ -260,6 +241,7 @@ void* t_function(void* data) // 스레드 처리할 단어 입력 함수
 				music.wrong_input();
 				score -= 50;
 				--ph;
+				//system("cls");
 			}
 		}
 
