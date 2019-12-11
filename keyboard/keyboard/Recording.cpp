@@ -85,6 +85,9 @@ void Record(game_status* status, string * filename)
 		while (*status == game_status::GameOver)
 			Sleep(SLEEPTIME);
 	}
+	
+	recorder->drop();
+	engine->drop();
 
 	return;
 }
