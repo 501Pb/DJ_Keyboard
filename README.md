@@ -1,5 +1,5 @@
 # DJ_Keyboard
->감성 힙합 리듬 게임 DJ_Keyboard
+> 감성 힙합 리듬 게임 DJ_Keyboard
 
 ## How to play
 <img src="./image/drop.png" width="10%" height="auto"> 
@@ -26,3 +26,5 @@
 [김광호](https://github.com/FKgk)
 [김수빈](https://github.com/kimziou77)
 [이현빈](https://github.com/Phaskal)
+
+--------
