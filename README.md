@@ -26,5 +26,3 @@
 [김광호](https://github.com/FKgk)
 [김수빈](https://github.com/kimziou77)
 [이현빈](https://github.com/Phaskal)
-
---------
